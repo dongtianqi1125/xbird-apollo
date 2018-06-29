@@ -11,11 +11,9 @@ eureka:
     healthcheck:
       enabled: true
     eurekaServiceUrlPollIntervalSeconds: 60
-
 endpoints:
   health:
     sensitive: false
-
 management:
   security:
     enabled: false
