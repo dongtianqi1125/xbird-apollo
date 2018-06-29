@@ -7,6 +7,9 @@ spring:
     converters:
       preferred-json-mapper: gson
   jpa:
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
