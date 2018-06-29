@@ -6,13 +6,16 @@ eureka:
     peerEurekaNodesUpdateIntervalMs: 60000
     enableSelfPreservation: false
   client:
-    fetchRegistry: false
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8080/eureka/
+    healthcheck:
+      enabled: true
     eurekaServiceUrlPollIntervalSeconds: 60
+
 endpoints:
   health:
     sensitive: false
+
 management:
   security:
     enabled: false
