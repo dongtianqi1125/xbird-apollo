@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class MultiResponseEntity<T> {
 
+  @SuppressWarnings("unused")
   private int code;
 
   private List<RichResponseEntity<T>> entities = new LinkedList<>();
@@ -31,7 +32,6 @@ public class MultiResponseEntity<T> {
       throw new IllegalArgumentException("sub response entity can not be null");
     }
     entities.add(responseEntity);
-
   }
 
 }

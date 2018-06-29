@@ -264,10 +264,4 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
     rebuildIntervalTimeUnit = bizConfig.appNamespaceCacheRebuildIntervalTimeUnit();
   }
 
-  //only for test use
-  private void reset() throws Exception {
-    scheduledExecutorService.shutdownNow();
-    initialize();
-    afterPropertiesSet();
-  }
 }

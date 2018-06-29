@@ -8,6 +8,8 @@ import org.springframework.context.ApplicationEvent;
 
 public class AppInfoChangedEvent extends ApplicationEvent{
 
+  private static final long serialVersionUID = 1L;
+
   public AppInfoChangedEvent(Object source) {
     super(source);
   }

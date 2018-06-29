@@ -1,19 +1,18 @@
 package com.ctrip.framework.apollo.configservice;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.ctrip.framework.apollo.biz.config.BizConfig;
 import com.ctrip.framework.apollo.biz.grayReleaseRule.GrayReleaseRulesHolder;
 import com.ctrip.framework.apollo.biz.message.ReleaseMessageScanner;
 import com.ctrip.framework.apollo.configservice.controller.ConfigFileController;
-import com.ctrip.framework.apollo.configservice.controller.NotificationController;
 import com.ctrip.framework.apollo.configservice.controller.NotificationControllerV2;
 import com.ctrip.framework.apollo.configservice.service.ReleaseMessageServiceWithCache;
-
 import com.ctrip.framework.apollo.configservice.service.config.ConfigService;
 import com.ctrip.framework.apollo.configservice.service.config.ConfigServiceWithCache;
 import com.ctrip.framework.apollo.configservice.service.config.DefaultConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -40,8 +39,6 @@ public class ConfigServiceAutoConfiguration {
   @Configuration
   static class MessageScannerConfiguration {
     @Autowired
-    private NotificationController notificationController;
-    @Autowired
     private ConfigFileController configFileController;
     @Autowired
     private NotificationControllerV2 notificationControllerV2;
@@ -64,7 +61,6 @@ public class ConfigServiceAutoConfiguration {
       releaseMessageScanner.addMessageListener(configFileController);
       //3. notify clients
       releaseMessageScanner.addMessageListener(notificationControllerV2);
-      releaseMessageScanner.addMessageListener(notificationController);
       return releaseMessageScanner;
     }
   }

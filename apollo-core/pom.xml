@@ -12,7 +12,6 @@
 	<artifactId>apollo-core</artifactId>
 	<name>Apollo Core</name>
 	<packaging>jar</packaging>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>

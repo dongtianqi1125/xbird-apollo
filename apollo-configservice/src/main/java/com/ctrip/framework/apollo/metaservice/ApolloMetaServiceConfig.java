@@ -1,12 +1,8 @@
 package com.ctrip.framework.apollo.metaservice;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@EnableAutoConfiguration
-@Configuration
-@ComponentScan(basePackageClasses = ApolloMetaServiceConfig.class)
+@SpringBootApplication(scanBasePackageClasses = ApolloMetaServiceConfig.class)
 public class ApolloMetaServiceConfig {
 
 }

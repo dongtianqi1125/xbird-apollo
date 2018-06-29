@@ -8,12 +8,11 @@ import java.lang.reflect.Method;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class CatTransaction implements Transaction {
-  private static Class CAT_TRANSACTION_CLASS;
+  private static Class<?> CAT_TRANSACTION_CLASS;
   private static Method SET_STATUS_WITH_STRING;
   private static Method SET_STATUS_WITH_THROWABLE;
   private static Method ADD_DATA_WITH_KEY_AND_VALUE;
   private static Method COMPLETE;
-
   private Object catTransaction;
 
   static {

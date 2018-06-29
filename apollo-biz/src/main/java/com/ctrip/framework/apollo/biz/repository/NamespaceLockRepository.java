@@ -6,7 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface NamespaceLockRepository extends PagingAndSortingRepository<NamespaceLock, Long> {
 
-  NamespaceLock findByNamespaceId(Long namespaceId);
+  NamespaceLock findByNamespaceId(long namespaceId);
 
   Long deleteByNamespaceId(Long namespaceId);
 

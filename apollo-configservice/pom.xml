@@ -10,7 +10,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>apollo-configservice</artifactId>
 	<name>Apollo ConfigService</name>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.ctrip.framework.apollo</groupId>

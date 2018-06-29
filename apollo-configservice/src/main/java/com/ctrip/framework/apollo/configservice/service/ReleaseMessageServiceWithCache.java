@@ -177,10 +177,4 @@ public class ReleaseMessageServiceWithCache implements ReleaseMessageListener, I
     scanIntervalTimeUnit = bizConfig.releaseMessageCacheScanIntervalTimeUnit();
   }
 
-  //only for test use
-  private void reset() throws Exception {
-    executorService.shutdownNow();
-    initialize();
-    afterPropertiesSet();
-  }
 }

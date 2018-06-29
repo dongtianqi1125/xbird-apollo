@@ -8,6 +8,8 @@ import org.springframework.context.ApplicationEvent;
 
 public class AppNamespaceCreationEvent extends ApplicationEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public AppNamespaceCreationEvent(Object source) {
     super(source);
   }

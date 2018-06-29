@@ -1,20 +1,21 @@
 package com.ctrip.framework.apollo.spring.boot;
 
-import com.ctrip.framework.apollo.Config;
-import com.ctrip.framework.apollo.ConfigService;
-import com.ctrip.framework.apollo.build.ApolloInjector;
-import com.ctrip.framework.apollo.core.ConfigConsts;
-import com.ctrip.framework.apollo.spring.config.ConfigPropertySourceFactory;
-import com.ctrip.framework.apollo.spring.config.PropertySourcesConstants;
-import com.ctrip.framework.apollo.spring.util.SpringInjector;
-import com.google.common.base.Splitter;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
+
+import com.ctrip.framework.apollo.Config;
+import com.ctrip.framework.apollo.ConfigService;
+import com.ctrip.framework.apollo.core.ConfigConsts;
+import com.ctrip.framework.apollo.spring.config.ConfigPropertySourceFactory;
+import com.ctrip.framework.apollo.spring.config.PropertySourcesConstants;
+import com.ctrip.framework.apollo.spring.util.SpringInjector;
+import com.google.common.base.Splitter;
 
 /**
  * Inject the Apollo config in Spring Boot bootstrap phase

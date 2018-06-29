@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class ServiceException extends AbstractApolloHttpException {
 
+  private static final long serialVersionUID = 1L;
+
   public ServiceException(String str) {
     super(str);
     setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);

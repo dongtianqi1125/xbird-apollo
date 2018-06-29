@@ -8,6 +8,8 @@ import org.springframework.context.ApplicationEvent;
 
 public class AppCreationEvent extends ApplicationEvent {
 
+  private static final long serialVersionUID = 1L;
+
   public AppCreationEvent(Object source) {
     super(source);
   }

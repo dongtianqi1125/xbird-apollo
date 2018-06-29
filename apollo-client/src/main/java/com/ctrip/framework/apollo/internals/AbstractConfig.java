@@ -37,11 +37,11 @@ import com.google.common.collect.Sets;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
+@SuppressWarnings("rawtypes")
 public abstract class AbstractConfig implements Config {
   private static final Logger logger = LoggerFactory.getLogger(AbstractConfig.class);
 
   private static ExecutorService m_executorService;
-
   private List<ConfigChangeListener> m_listeners = Lists.newCopyOnWriteArrayList();
   private ConfigUtil m_configUtil;
   private volatile Cache<String, Integer> m_integerCache;

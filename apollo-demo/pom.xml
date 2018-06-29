@@ -10,11 +10,9 @@
 	<artifactId>apollo-demo</artifactId>
 	<name>Apollo Demo</name>
 	<packaging>jar</packaging>
-	
 	<properties>
 		<spring-demo.version>4.3.6.RELEASE</spring-demo.version>
 	</properties>
-	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -87,6 +85,11 @@
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>

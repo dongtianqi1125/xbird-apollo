@@ -18,5 +18,5 @@ public interface ConsumerTokenRepository extends PagingAndSortingRepository<Cons
    */
   ConsumerToken findTopByTokenAndExpiresAfter(String token, Date validDate);
 
-  ConsumerToken findByConsumerId(Long consumerId);
+  ConsumerToken findByConsumerId(long consumerId);
 }

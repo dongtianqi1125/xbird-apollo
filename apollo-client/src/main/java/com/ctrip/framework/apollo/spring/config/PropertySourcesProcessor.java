@@ -108,12 +108,6 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
     this.environment = (ConfigurableEnvironment) environment;
   }
 
-  //only for test
-  private static void reset() {
-    NAMESPACE_NAMES.clear();
-    INITIALIZED.set(false);
-  }
-
   @Override
   public int getOrder() {
     //make it as early as possible

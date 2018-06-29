@@ -15,14 +15,17 @@ import com.google.common.base.Charsets;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class XmlApplication {
+  @SuppressWarnings("resource")
   public static void main(String[] args) throws IOException {
     ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
     XmlBean xmlBean = context.getBean(XmlBean.class);
 
-    System.out.println("XmlApplication Demo. Input any key except quit to print the values. Input quit to exit.");
+    System.out.println(
+        "XmlApplication Demo. Input any key except quit to print the values. Input quit to exit.");
     while (true) {
       System.out.print("> ");
-      String input = new BufferedReader(new InputStreamReader(System.in, Charsets.UTF_8)).readLine();
+      String input =
+          new BufferedReader(new InputStreamReader(System.in, Charsets.UTF_8)).readLine();
       if (!Strings.isNullOrEmpty(input) && input.trim().equalsIgnoreCase("quit")) {
         System.exit(0);
       }

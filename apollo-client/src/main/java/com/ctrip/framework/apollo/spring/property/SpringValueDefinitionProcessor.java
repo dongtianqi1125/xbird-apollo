@@ -88,10 +88,4 @@ public class SpringValueDefinitionProcessor implements BeanDefinitionRegistryPos
       }
     }
   }
-
-  //only for test
-  private static void reset() {
-    initialized.set(false);
-    beanName2SpringValueDefinitions.clear();
-  }
 }

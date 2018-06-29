@@ -1,19 +1,10 @@
 package com.ctrip.framework.apollo.spring.annotation;
 
-import com.ctrip.framework.apollo.build.ApolloInjector;
-import com.ctrip.framework.apollo.spring.property.AutoUpdateConfigChangeListener;
-import com.ctrip.framework.apollo.spring.property.PlaceholderHelper;
-import com.ctrip.framework.apollo.spring.property.SpringValue;
-import com.ctrip.framework.apollo.spring.property.SpringValueRegistry;
-import com.ctrip.framework.apollo.spring.util.SpringInjector;
-import com.ctrip.framework.apollo.util.ConfigUtil;
-import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -22,6 +13,15 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
+
+import com.ctrip.framework.apollo.build.ApolloInjector;
+import com.ctrip.framework.apollo.spring.property.PlaceholderHelper;
+import com.ctrip.framework.apollo.spring.property.SpringValue;
+import com.ctrip.framework.apollo.spring.property.SpringValueRegistry;
+import com.ctrip.framework.apollo.spring.util.SpringInjector;
+import com.ctrip.framework.apollo.util.ConfigUtil;
+import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
 
 /**
  * Create by zhangzheng on 2018/2/6

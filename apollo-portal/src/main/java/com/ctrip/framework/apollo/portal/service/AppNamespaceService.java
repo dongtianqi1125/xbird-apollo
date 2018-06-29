@@ -1,21 +1,20 @@
 package com.ctrip.framework.apollo.portal.service;
 
-import com.ctrip.framework.apollo.common.entity.App;
-import com.ctrip.framework.apollo.common.entity.AppNamespace;
-import com.ctrip.framework.apollo.common.exception.BadRequestException;
-import com.ctrip.framework.apollo.common.exception.ServiceException;
-import com.ctrip.framework.apollo.core.ConfigConsts;
-import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
-import com.ctrip.framework.apollo.core.utils.StringUtils;
-import com.ctrip.framework.apollo.portal.repository.AppNamespaceRepository;
-import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
+import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
+import com.ctrip.framework.apollo.common.entity.App;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.core.ConfigConsts;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
+import com.ctrip.framework.apollo.portal.repository.AppNamespaceRepository;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 
 @Service
 public class AppNamespaceService {
