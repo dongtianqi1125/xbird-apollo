@@ -1,16 +1,10 @@
 package com.ctrip.framework.apollo.portal.spi.ctrip;
 
-import com.google.gson.Gson;
+import java.util.Arrays;
 
-import com.ctrip.framework.apollo.common.entity.App;
-import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
-import com.ctrip.framework.apollo.portal.entity.bo.ReleaseHistoryBO;
-import com.ctrip.framework.apollo.portal.service.AppService;
-import com.ctrip.framework.apollo.portal.service.ReleaseService;
-import com.ctrip.framework.apollo.portal.spi.MQService;
-import com.ctrip.framework.apollo.tracer.Tracer;
+import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,15 +14,21 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-
-import javax.annotation.PostConstruct;
+import com.ctrip.framework.apollo.common.entity.App;
+import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
+import com.ctrip.framework.apollo.portal.entity.bo.ReleaseHistoryBO;
+import com.ctrip.framework.apollo.portal.service.AppService;
+import com.ctrip.framework.apollo.portal.service.ReleaseService;
+import com.ctrip.framework.apollo.portal.spi.MQService;
+import com.ctrip.framework.apollo.tracer.Tracer;
+import com.google.gson.Gson;
 
 
 public class CtripMQService implements MQService {
 
-  private static final org.apache.commons.lang.time.FastDateFormat
-      TIMESTAMP_FORMAT = org.apache.commons.lang.time.FastDateFormat.getInstance("yyyy-MM-dd hh:mm:ss");
+  private static final FastDateFormat
+      TIMESTAMP_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd hh:mm:ss");
   private static final String CONFIG_PUBLISH_NOTIFY_TO_NOC_TOPIC = "ops.noc.record.created";
 
   private Gson gson = new Gson();
