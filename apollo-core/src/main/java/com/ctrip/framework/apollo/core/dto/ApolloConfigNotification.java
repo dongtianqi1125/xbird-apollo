@@ -8,9 +8,8 @@ public class ApolloConfigNotification {
   private long notificationId;
   private volatile ApolloNotificationMessages messages;
 
-  //for json converter
-  public ApolloConfigNotification() {
-  }
+  // for json converter
+  public ApolloConfigNotification() {}
 
   public ApolloConfigNotification(String namespaceName, long notificationId) {
     this.namespaceName = namespaceName;
@@ -50,9 +49,7 @@ public class ApolloConfigNotification {
 
   @Override
   public String toString() {
-    return "ApolloConfigNotification{" +
-        "namespaceName='" + namespaceName + '\'' +
-        ", notificationId=" + notificationId +
-        '}';
+    return "ApolloConfigNotification{" + "namespaceName='" + namespaceName + '\''
+        + ", notificationId=" + notificationId + '}';
   }
 }
