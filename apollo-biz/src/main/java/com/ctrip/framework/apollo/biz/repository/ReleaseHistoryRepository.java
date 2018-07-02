@@ -12,12 +12,14 @@ import com.ctrip.framework.apollo.biz.entity.ReleaseHistory;
  * @author Jason Song(song_s@ctrip.com)
  */
 public interface ReleaseHistoryRepository extends PagingAndSortingRepository<ReleaseHistory, Long> {
-  Page<ReleaseHistory> findByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(String appId, String
-      clusterName, String namespaceName, Pageable pageable);
+  Page<ReleaseHistory> findByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(String appId,
+      String clusterName, String namespaceName, Pageable pageable);
 
-  Page<ReleaseHistory> findByReleaseIdAndOperationOrderByIdDesc(long releaseId, int operation, Pageable pageable);
+  Page<ReleaseHistory> findByReleaseIdAndOperationOrderByIdDesc(long releaseId, int operation,
+      Pageable pageable);
 
-  Page<ReleaseHistory> findByPreviousReleaseIdAndOperationOrderByIdDesc(long previousReleaseId, int operation, Pageable pageable);
+  Page<ReleaseHistory> findByPreviousReleaseIdAndOperationOrderByIdDesc(long previousReleaseId,
+      int operation, Pageable pageable);
 
   @Modifying
   @Query("update ReleaseHistory set isdeleted=1,DataChange_LastModifiedBy = ?4 where appId=?1 and clusterName=?2 and namespaceName = ?3")

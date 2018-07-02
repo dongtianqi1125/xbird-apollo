@@ -9,7 +9,6 @@ import com.ctrip.framework.apollo.common.utils.UniqueKeyGenerator;
  */
 public class ReleaseKeyGenerator extends UniqueKeyGenerator {
 
-
   /**
    * Generate the release key in the format: timestamp+appId+cluster+namespace+hash(ipAsInt+counter)
    *

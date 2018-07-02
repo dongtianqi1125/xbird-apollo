@@ -23,18 +23,17 @@ public class BizConfig extends RefreshableConfig {
 
   private static final int DEFAULT_ITEM_KEY_LENGTH = 128;
   private static final int DEFAULT_ITEM_VALUE_LENGTH = 20000;
-  private static final int DEFAULT_APPNAMESPACE_CACHE_REBUILD_INTERVAL = 60; //60s
-  private static final int DEFAULT_GRAY_RELEASE_RULE_SCAN_INTERVAL = 60; //60s
-  private static final int DEFAULT_APPNAMESPACE_CACHE_SCAN_INTERVAL = 1; //1s
-  private static final int DEFAULT_RELEASE_MESSAGE_CACHE_SCAN_INTERVAL = 1; //1s
-  private static final int DEFAULT_RELEASE_MESSAGE_SCAN_INTERVAL_IN_MS = 1000; //1000ms
+  private static final int DEFAULT_APPNAMESPACE_CACHE_REBUILD_INTERVAL = 60; // 60s
+  private static final int DEFAULT_GRAY_RELEASE_RULE_SCAN_INTERVAL = 60; // 60s
+  private static final int DEFAULT_APPNAMESPACE_CACHE_SCAN_INTERVAL = 1; // 1s
+  private static final int DEFAULT_RELEASE_MESSAGE_CACHE_SCAN_INTERVAL = 1; // 1s
+  private static final int DEFAULT_RELEASE_MESSAGE_SCAN_INTERVAL_IN_MS = 1000; // 1000ms
   private static final int DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH = 100;
-  private static final int DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH_INTERVAL_IN_MILLI = 100;//100ms
+  private static final int DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH_INTERVAL_IN_MILLI = 100;// 100ms
 
   private Gson gson = new Gson();
   private static final Type namespaceValueLengthOverrideTypeReference =
-      new TypeToken<Map<Long, Integer>>() {
-      }.getType();
+      new TypeToken<Map<Long, Integer>>() {}.getType();
 
   @Autowired
   private BizDBPropertySource propertySource;
@@ -54,7 +53,8 @@ public class BizConfig extends RefreshableConfig {
   }
 
   public int grayReleaseRuleScanInterval() {
-    int interval = getIntProperty("apollo.gray-release-rule-scan.interval", DEFAULT_GRAY_RELEASE_RULE_SCAN_INTERVAL);
+    int interval = getIntProperty("apollo.gray-release-rule-scan.interval",
+        DEFAULT_GRAY_RELEASE_RULE_SCAN_INTERVAL);
     return checkInt(interval, 1, Integer.MAX_VALUE, DEFAULT_GRAY_RELEASE_RULE_SCAN_INTERVAL);
   }
 
@@ -72,8 +72,8 @@ public class BizConfig extends RefreshableConfig {
     String namespaceValueLengthOverrideString = getValue("namespace.value.length.limit.override");
     Map<Long, Integer> namespaceValueLengthOverride = Maps.newHashMap();
     if (!Strings.isNullOrEmpty(namespaceValueLengthOverrideString)) {
-      namespaceValueLengthOverride =
-          gson.fromJson(namespaceValueLengthOverrideString, namespaceValueLengthOverrideTypeReference);
+      namespaceValueLengthOverride = gson.fromJson(namespaceValueLengthOverrideString,
+          namespaceValueLengthOverrideTypeReference);
     }
 
     return namespaceValueLengthOverride;
@@ -83,19 +83,9 @@ public class BizConfig extends RefreshableConfig {
     return !getBooleanProperty("namespace.lock.switch", false);
   }
 
-  /**
-   * ctrip config
-   **/
-  public String cloggingUrl() {
-    return getValue("clogging.server.url");
-  }
-
-  public String cloggingPort() {
-    return getValue("clogging.server.port");
-  }
-
   public int appNamespaceCacheScanInterval() {
-    int interval = getIntProperty("apollo.app-namespace-cache-scan.interval", DEFAULT_APPNAMESPACE_CACHE_SCAN_INTERVAL);
+    int interval = getIntProperty("apollo.app-namespace-cache-scan.interval",
+        DEFAULT_APPNAMESPACE_CACHE_SCAN_INTERVAL);
     return checkInt(interval, 1, Integer.MAX_VALUE, DEFAULT_APPNAMESPACE_CACHE_SCAN_INTERVAL);
   }
 
@@ -104,7 +94,8 @@ public class BizConfig extends RefreshableConfig {
   }
 
   public int appNamespaceCacheRebuildInterval() {
-    int interval = getIntProperty("apollo.app-namespace-cache-rebuild.interval", DEFAULT_APPNAMESPACE_CACHE_REBUILD_INTERVAL);
+    int interval = getIntProperty("apollo.app-namespace-cache-rebuild.interval",
+        DEFAULT_APPNAMESPACE_CACHE_REBUILD_INTERVAL);
     return checkInt(interval, 1, Integer.MAX_VALUE, DEFAULT_APPNAMESPACE_CACHE_REBUILD_INTERVAL);
   }
 
@@ -113,7 +104,8 @@ public class BizConfig extends RefreshableConfig {
   }
 
   public int releaseMessageCacheScanInterval() {
-    int interval = getIntProperty("apollo.release-message-cache-scan.interval", DEFAULT_RELEASE_MESSAGE_CACHE_SCAN_INTERVAL);
+    int interval = getIntProperty("apollo.release-message-cache-scan.interval",
+        DEFAULT_RELEASE_MESSAGE_CACHE_SCAN_INTERVAL);
     return checkInt(interval, 1, Integer.MAX_VALUE, DEFAULT_RELEASE_MESSAGE_CACHE_SCAN_INTERVAL);
   }
 
@@ -122,18 +114,22 @@ public class BizConfig extends RefreshableConfig {
   }
 
   public int releaseMessageScanIntervalInMilli() {
-    int interval = getIntProperty("apollo.message-scan.interval", DEFAULT_RELEASE_MESSAGE_SCAN_INTERVAL_IN_MS);
+    int interval =
+        getIntProperty("apollo.message-scan.interval", DEFAULT_RELEASE_MESSAGE_SCAN_INTERVAL_IN_MS);
     return checkInt(interval, 100, Integer.MAX_VALUE, DEFAULT_RELEASE_MESSAGE_SCAN_INTERVAL_IN_MS);
   }
 
   public int releaseMessageNotificationBatch() {
-    int batch = getIntProperty("apollo.release-message.notification.batch", DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH);
+    int batch = getIntProperty("apollo.release-message.notification.batch",
+        DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH);
     return checkInt(batch, 1, Integer.MAX_VALUE, DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH);
   }
 
   public int releaseMessageNotificationBatchIntervalInMilli() {
-    int interval = getIntProperty("apollo.release-message.notification.batch.interval", DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH_INTERVAL_IN_MILLI);
-    return checkInt(interval, 10, Integer.MAX_VALUE, DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH_INTERVAL_IN_MILLI);
+    int interval = getIntProperty("apollo.release-message.notification.batch.interval",
+        DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH_INTERVAL_IN_MILLI);
+    return checkInt(interval, 10, Integer.MAX_VALUE,
+        DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH_INTERVAL_IN_MILLI);
   }
 
   public boolean isConfigServiceCacheEnabled() {

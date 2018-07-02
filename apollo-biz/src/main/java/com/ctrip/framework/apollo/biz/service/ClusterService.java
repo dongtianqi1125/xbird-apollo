@@ -28,7 +28,6 @@ public class ClusterService {
   @Autowired
   private NamespaceService namespaceService;
 
-
   public boolean isClusterNameUnique(String appId, String clusterName) {
     Objects.requireNonNull(appId, "AppId must not be null");
     Objects.requireNonNull(clusterName, "ClusterName must not be null");
@@ -52,20 +51,15 @@ public class ClusterService {
     if (clusters == null) {
       return Collections.emptyList();
     }
-
     Collections.sort(clusters);
-
     return clusters;
   }
 
   @Transactional
   public Cluster saveWithInstanceOfAppNamespaces(Cluster entity) {
-
     Cluster savedCluster = saveWithoutInstanceOfAppNamespaces(entity);
-
     namespaceService.instanceOfAppNamespaces(savedCluster.getAppId(), savedCluster.getName(),
-                                             savedCluster.getDataChangeCreatedBy());
-
+        savedCluster.getDataChangeCreatedBy());
     return savedCluster;
   }
 
@@ -74,12 +68,10 @@ public class ClusterService {
     if (!isClusterNameUnique(entity.getAppId(), entity.getName())) {
       throw new BadRequestException("cluster not unique");
     }
-    entity.setId(0);//protection
+    entity.setId(0);// protection
     Cluster cluster = clusterRepository.save(entity);
-
     auditService.audit(Cluster.class.getSimpleName(), cluster.getId(), Audit.OP.INSERT,
-                       cluster.getDataChangeCreatedBy());
-
+        cluster.getDataChangeCreatedBy());
     return cluster;
   }
 
@@ -90,13 +82,11 @@ public class ClusterService {
       throw new BadRequestException("cluster not exist");
     }
 
-    //delete linked namespaces
+    // delete linked namespaces
     namespaceService.deleteByAppIdAndClusterName(cluster.getAppId(), cluster.getName(), operator);
-
     cluster.setDeleted(true);
     cluster.setDataChangeLastModifiedBy(operator);
     clusterRepository.save(cluster);
-
     auditService.audit(Cluster.class.getSimpleName(), id, Audit.OP.DELETE, operator);
   }
 
@@ -106,10 +96,8 @@ public class ClusterService {
         clusterRepository.findByAppIdAndName(cluster.getAppId(), cluster.getName());
     BeanUtils.copyEntityProperties(cluster, managedCluster);
     managedCluster = clusterRepository.save(managedCluster);
-
     auditService.audit(Cluster.class.getSimpleName(), managedCluster.getId(), Audit.OP.UPDATE,
-                       managedCluster.getDataChangeLastModifiedBy());
-
+        managedCluster.getDataChangeLastModifiedBy());
     return managedCluster;
   }
 
@@ -124,7 +112,6 @@ public class ClusterService {
     cluster.setDataChangeCreatedBy(createBy);
     cluster.setDataChangeLastModifiedBy(createBy);
     clusterRepository.save(cluster);
-
     auditService.audit(Cluster.class.getSimpleName(), cluster.getId(), Audit.OP.INSERT, createBy);
   }
 
@@ -133,7 +120,6 @@ public class ClusterService {
     if (parentCluster == null) {
       throw new BadRequestException("parent cluster not exist");
     }
-
     return clusterRepository.findByParentClusterId(parentCluster.getId());
   }
 

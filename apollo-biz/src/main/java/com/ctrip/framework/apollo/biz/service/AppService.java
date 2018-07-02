@@ -28,7 +28,7 @@ public class AppService {
     Objects.requireNonNull(appId, "AppId must not be null");
     return Objects.isNull(appRepository.findByAppId(appId));
   }
-  
+
   @Transactional
   public void delete(long id, String operator) {
     App app = appRepository.findOne(id);
@@ -39,7 +39,6 @@ public class AppService {
     app.setDeleted(true);
     app.setDataChangeLastModifiedBy(operator);
     appRepository.save(app);
-
     auditService.audit(App.class.getSimpleName(), id, Audit.OP.DELETE, operator);
   }
 
@@ -61,12 +60,12 @@ public class AppService {
     if (!isAppIdUnique(entity.getAppId())) {
       throw new ServiceException("appId not unique");
     }
-    entity.setId(0);//protection
+    entity.setId(0);// protection
     App app = appRepository.save(entity);
-    
+
     auditService.audit(App.class.getSimpleName(), app.getId(), Audit.OP.INSERT,
         app.getDataChangeCreatedBy());
-    
+
     return app;
   }
 
@@ -87,9 +86,7 @@ public class AppService {
     managedApp.setDataChangeLastModifiedBy(app.getDataChangeLastModifiedBy());
 
     managedApp = appRepository.save(managedApp);
-    
     auditService.audit(App.class.getSimpleName(), managedApp.getId(), Audit.OP.UPDATE,
         managedApp.getDataChangeLastModifiedBy());
-    
   }
 }

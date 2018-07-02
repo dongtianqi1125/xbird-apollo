@@ -29,7 +29,8 @@ public class ReleaseMessageService {
     return releaseMessageRepository.findTopByMessageInOrderByIdDesc(messages);
   }
 
-  public List<ReleaseMessage> findLatestReleaseMessagesGroupByMessages(Collection<String> messages) {
+  public List<ReleaseMessage> findLatestReleaseMessagesGroupByMessages(
+      Collection<String> messages) {
     if (CollectionUtils.isEmpty(messages)) {
       return Collections.emptyList();
     }

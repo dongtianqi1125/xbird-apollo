@@ -16,8 +16,8 @@ public class GrayReleaseRuleCache {
   private int branchStatus;
   private Set<GrayReleaseRuleItemDTO> ruleItems;
 
-  public GrayReleaseRuleCache(long ruleId, String branchName, String namespaceName, long
-      releaseId, int branchStatus, long loadVersion, Set<GrayReleaseRuleItemDTO> ruleItems) {
+  public GrayReleaseRuleCache(long ruleId, String branchName, String namespaceName, long releaseId,
+      int branchStatus, long loadVersion, Set<GrayReleaseRuleItemDTO> ruleItems) {
     this.ruleId = ruleId;
     this.branchName = branchName;
     this.namespaceName = namespaceName;

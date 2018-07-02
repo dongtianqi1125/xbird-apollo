@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Table(name = "GrayReleaseRule")
 @SQLDelete(sql = "Update GrayReleaseRule set isDeleted = 1 where id = ?")
 @Where(clause = "isDeleted = 0")
-public class GrayReleaseRule extends BaseEntity{
+public class GrayReleaseRule extends BaseEntity {
 
   @Column(name = "appId", nullable = false)
   private String appId;

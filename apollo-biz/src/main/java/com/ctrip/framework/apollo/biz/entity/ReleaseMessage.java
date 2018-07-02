@@ -35,8 +35,7 @@ public class ReleaseMessage {
     }
   }
 
-  public ReleaseMessage() {
-  }
+  public ReleaseMessage() {}
 
   public ReleaseMessage(String message) {
     this.message = message;
@@ -60,11 +59,7 @@ public class ReleaseMessage {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .omitNullValues()
-        .add("id", id)
-        .add("message", message)
-        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime)
-        .toString();
+    return MoreObjects.toStringHelper(this).omitNullValues().add("id", id).add("message", message)
+        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime).toString();
   }
 }

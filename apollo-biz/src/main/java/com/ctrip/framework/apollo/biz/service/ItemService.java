@@ -46,7 +46,6 @@ public class ItemService {
     item.setDeleted(true);
     item.setDataChangeLastModifiedBy(operator);
     Item deletedItem = itemRepository.save(item);
-
     auditService.audit(Item.class.getSimpleName(), id, Audit.OP.DELETE, operator);
     return deletedItem;
   }
@@ -93,7 +92,8 @@ public class ItemService {
     return items;
   }
 
-  public List<Item> findItemsWithoutOrdered(String appId, String clusterName, String namespaceName) {
+  public List<Item> findItemsWithoutOrdered(String appId, String clusterName,
+      String namespaceName) {
     Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
     if (namespace != null) {
       return findItemsWithoutOrdered(namespace.getId());
@@ -120,15 +120,15 @@ public class ItemService {
   }
 
   public List<Item> findItemsModifiedAfterDate(long namespaceId, Date date) {
-    return itemRepository.findByNamespaceIdAndDataChangeLastModifiedTimeGreaterThan(namespaceId, date);
+    return itemRepository.findByNamespaceIdAndDataChangeLastModifiedTimeGreaterThan(namespaceId,
+        date);
   }
 
   @Transactional
   public Item save(Item entity) {
     checkItemKeyLength(entity.getKey());
     checkItemValueLength(entity.getNamespaceId(), entity.getValue());
-
-    entity.setId(0);//protection
+    entity.setId(0);// protection
 
     if (entity.getLineNum() == 0) {
       Item lastItem = findLastOne(entity.getNamespaceId());
@@ -137,10 +137,8 @@ public class ItemService {
     }
 
     Item item = itemRepository.save(entity);
-
     auditService.audit(Item.class.getSimpleName(), item.getId(), Audit.OP.INSERT,
-                       item.getDataChangeCreatedBy());
-
+        item.getDataChangeCreatedBy());
     return item;
   }
 
@@ -150,10 +148,8 @@ public class ItemService {
     Item managedItem = itemRepository.findOne(item.getId());
     BeanUtils.copyEntityProperties(item, managedItem);
     managedItem = itemRepository.save(managedItem);
-
     auditService.audit(Item.class.getSimpleName(), managedItem.getId(), Audit.OP.UPDATE,
-                       managedItem.getDataChangeLastModifiedBy());
-
+        managedItem.getDataChangeLastModifiedBy());
     return managedItem;
   }
 
@@ -174,7 +170,8 @@ public class ItemService {
 
   private int getItemValueLengthLimit(long namespaceId) {
     Map<Long, Integer> namespaceValueLengthOverride = bizConfig.namespaceValueLengthLimitOverride();
-    if (namespaceValueLengthOverride != null && namespaceValueLengthOverride.containsKey(namespaceId)) {
+    if (namespaceValueLengthOverride != null
+        && namespaceValueLengthOverride.containsKey(namespaceId)) {
       return namespaceValueLengthOverride.get(namespaceId);
     }
     return bizConfig.itemValueLengthLimit();

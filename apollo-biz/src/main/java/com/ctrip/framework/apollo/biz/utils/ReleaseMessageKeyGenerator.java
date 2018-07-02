@@ -1,6 +1,5 @@
 package com.ctrip.framework.apollo.biz.utils;
 
-
 import com.google.common.base.Joiner;
 
 import com.ctrip.framework.apollo.core.ConfigConsts;

@@ -39,7 +39,8 @@ public class DatabaseMessageSender implements MessageSender {
   private ReleaseMessageRepository releaseMessageRepository;
 
   public DatabaseMessageSender() {
-    cleanExecutorService = Executors.newSingleThreadExecutor(ApolloThreadFactory.create("DatabaseMessageSender", true));
+    cleanExecutorService = Executors
+        .newSingleThreadExecutor(ApolloThreadFactory.create("DatabaseMessageSender", true));
     cleanStopped = new AtomicBoolean(false);
   }
 
@@ -87,20 +88,22 @@ public class DatabaseMessageSender implements MessageSender {
 
   private void cleanMessage(Long id) {
     boolean hasMore = true;
-    //double check in case the release message is rolled back
+    // double check in case the release message is rolled back
     ReleaseMessage releaseMessage = releaseMessageRepository.findOne(id);
     if (releaseMessage == null) {
       return;
     }
     while (hasMore && !Thread.currentThread().isInterrupted()) {
-      List<ReleaseMessage> messages = releaseMessageRepository.findFirst100ByMessageAndIdLessThanOrderByIdAsc(
-          releaseMessage.getMessage(), releaseMessage.getId());
+      List<ReleaseMessage> messages =
+          releaseMessageRepository.findFirst100ByMessageAndIdLessThanOrderByIdAsc(
+              releaseMessage.getMessage(), releaseMessage.getId());
 
       releaseMessageRepository.delete(messages);
       hasMore = messages.size() == 100;
 
       messages.forEach(toRemove -> Tracer.logEvent(
-          String.format("ReleaseMessage.Clean.%s", toRemove.getMessage()), String.valueOf(toRemove.getId())));
+          String.format("ReleaseMessage.Clean.%s", toRemove.getMessage()),
+          String.valueOf(toRemove.getId())));
     }
   }
 

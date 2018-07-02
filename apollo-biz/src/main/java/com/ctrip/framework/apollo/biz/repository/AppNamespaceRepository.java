@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public interface AppNamespaceRepository extends PagingAndSortingRepository<AppNamespace, Long>{
+public interface AppNamespaceRepository extends PagingAndSortingRepository<AppNamespace, Long> {
 
   AppNamespace findByAppIdAndName(String appId, String namespaceName);
 

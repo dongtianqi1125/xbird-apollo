@@ -52,29 +52,28 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
 
   private int databaseScanInterval;
   private ScheduledExecutorService executorService;
-  //store configAppId+configCluster+configNamespace -> GrayReleaseRuleCache map
+  // store configAppId+configCluster+configNamespace -> GrayReleaseRuleCache map
   private Multimap<String, GrayReleaseRuleCache> grayReleaseRuleCache;
-  //store clientAppId+clientNamespace+ip -> ruleId map
+  // store clientAppId+clientNamespace+ip -> ruleId map
   private Multimap<String, Long> reversedGrayReleaseRuleCache;
-  //an auto increment version to indicate the age of rules
+  // an auto increment version to indicate the age of rules
   private AtomicLong loadVersion;
 
   public GrayReleaseRulesHolder() {
     loadVersion = new AtomicLong();
     grayReleaseRuleCache = Multimaps.synchronizedSetMultimap(HashMultimap.create());
     reversedGrayReleaseRuleCache = Multimaps.synchronizedSetMultimap(HashMultimap.create());
-    executorService = Executors.newScheduledThreadPool(1, ApolloThreadFactory
-        .create("GrayReleaseRulesHolder", true));
+    executorService = Executors.newScheduledThreadPool(1,
+        ApolloThreadFactory.create("GrayReleaseRulesHolder", true));
   }
 
   @Override
   public void afterPropertiesSet() throws Exception {
     populateDataBaseInterval();
-    //force sync load for the first time
+    // force sync load for the first time
     periodicScanRules();
-    executorService.scheduleWithFixedDelay(this::periodicScanRules,
-        getDatabaseScanIntervalSecond(), getDatabaseScanIntervalSecond(), getDatabaseScanTimeUnit()
-    );
+    executorService.scheduleWithFixedDelay(this::periodicScanRules, getDatabaseScanIntervalSecond(),
+        getDatabaseScanIntervalSecond(), getDatabaseScanTimeUnit());
   }
 
   @Override
@@ -85,7 +84,7 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
       return;
     }
     List<String> keys = STRING_SPLITTER.splitToList(releaseMessage);
-    //message should be appId+cluster+namespace
+    // message should be appId+cluster+namespace
     if (keys.size() != 3) {
       logger.error("message format invalid - {}", releaseMessage);
       return;
@@ -101,8 +100,8 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
   }
 
   private void periodicScanRules() {
-    Transaction transaction = Tracer.newTransaction("Apollo.GrayReleaseRulesScanner",
-        "scanGrayReleaseRules");
+    Transaction transaction =
+        Tracer.newTransaction("Apollo.GrayReleaseRulesScanner", "scanGrayReleaseRules");
     try {
       loadVersion.incrementAndGet();
       scanGrayReleaseRules();
@@ -115,16 +114,16 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
     }
   }
 
-  public Long findReleaseIdFromGrayReleaseRule(String clientAppId, String clientIp, String
-      configAppId, String configCluster, String configNamespaceName) {
+  public Long findReleaseIdFromGrayReleaseRule(String clientAppId, String clientIp,
+      String configAppId, String configCluster, String configNamespaceName) {
     String key = assembleGrayReleaseRuleKey(configAppId, configCluster, configNamespaceName);
     if (!grayReleaseRuleCache.containsKey(key)) {
       return null;
     }
-    //create a new list to avoid ConcurrentModificationException
+    // create a new list to avoid ConcurrentModificationException
     List<GrayReleaseRuleCache> rules = Lists.newArrayList(grayReleaseRuleCache.get(key));
     for (GrayReleaseRuleCache rule : rules) {
-      //check branch status
+      // check branch status
       if (rule.getBranchStatus() != NamespaceBranchStatus.ACTIVE) {
         continue;
       }
@@ -141,10 +140,10 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
    * load gray releases. Because gray release rules actually apply to one more dimension - cluster.
    */
   public boolean hasGrayReleaseRule(String clientAppId, String clientIp, String namespaceName) {
-    return reversedGrayReleaseRuleCache.containsKey(assembleReversedGrayReleaseRuleKey(clientAppId,
-        namespaceName, clientIp)) || reversedGrayReleaseRuleCache.containsKey
-        (assembleReversedGrayReleaseRuleKey(clientAppId, namespaceName, GrayReleaseRuleItemDTO
-            .ALL_IP));
+    return reversedGrayReleaseRuleCache
+        .containsKey(assembleReversedGrayReleaseRuleKey(clientAppId, namespaceName, clientIp))
+        || reversedGrayReleaseRuleCache.containsKey(assembleReversedGrayReleaseRuleKey(clientAppId,
+            namespaceName, GrayReleaseRuleItemDTO.ALL_IP));
   }
 
   private void scanGrayReleaseRules() {
@@ -152,15 +151,15 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
     boolean hasMore = true;
 
     while (hasMore && !Thread.currentThread().isInterrupted()) {
-      List<GrayReleaseRule> grayReleaseRules = grayReleaseRuleRepository
-          .findFirst500ByIdGreaterThanOrderByIdAsc(maxIdScanned);
+      List<GrayReleaseRule> grayReleaseRules =
+          grayReleaseRuleRepository.findFirst500ByIdGreaterThanOrderByIdAsc(maxIdScanned);
       if (CollectionUtils.isEmpty(grayReleaseRules)) {
         break;
       }
       mergeGrayReleaseRules(grayReleaseRules);
       int rulesScanned = grayReleaseRules.size();
       maxIdScanned = grayReleaseRules.get(rulesScanned - 1).getId();
-      //batch is 500
+      // batch is 500
       hasMore = rulesScanned == 500;
     }
   }
@@ -171,12 +170,12 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
     }
     for (GrayReleaseRule grayReleaseRule : grayReleaseRules) {
       if (grayReleaseRule.getReleaseId() == null || grayReleaseRule.getReleaseId() == 0) {
-        //filter rules with no release id, i.e. never released
+        // filter rules with no release id, i.e. never released
         continue;
       }
-      String key = assembleGrayReleaseRuleKey(grayReleaseRule.getAppId(), grayReleaseRule
-          .getClusterName(), grayReleaseRule.getNamespaceName());
-      //create a new list to avoid ConcurrentModificationException
+      String key = assembleGrayReleaseRuleKey(grayReleaseRule.getAppId(),
+          grayReleaseRule.getClusterName(), grayReleaseRule.getNamespaceName());
+      // create a new list to avoid ConcurrentModificationException
       List<GrayReleaseRuleCache> rules = Lists.newArrayList(grayReleaseRuleCache.get(key));
       GrayReleaseRuleCache oldRule = null;
       for (GrayReleaseRuleCache ruleCache : rules) {
@@ -186,12 +185,12 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
         }
       }
 
-      //if old rule is null and new rule's branch status is not active, ignore
+      // if old rule is null and new rule's branch status is not active, ignore
       if (oldRule == null && grayReleaseRule.getBranchStatus() != NamespaceBranchStatus.ACTIVE) {
         continue;
       }
 
-      //use id comparison to avoid synchronization
+      // use id comparison to avoid synchronization
       if (oldRule == null || grayReleaseRule.getId() > oldRule.getRuleId()) {
         addCache(key, transformRuleToRuleCache(grayReleaseRule));
         if (oldRule != null) {
@@ -199,10 +198,10 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
         }
       } else {
         if (oldRule.getBranchStatus() == NamespaceBranchStatus.ACTIVE) {
-          //update load version
+          // update load version
           oldRule.setLoadVersion(loadVersion.get());
         } else if ((loadVersion.get() - oldRule.getLoadVersion()) > 1) {
-          //remove outdated inactive branch rule after 2 update cycles
+          // remove outdated inactive branch rule after 2 update cycles
           removeCache(key, oldRule);
         }
       }
@@ -213,8 +212,9 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
     if (ruleCache.getBranchStatus() == NamespaceBranchStatus.ACTIVE) {
       for (GrayReleaseRuleItemDTO ruleItemDTO : ruleCache.getRuleItems()) {
         for (String clientIp : ruleItemDTO.getClientIpList()) {
-          reversedGrayReleaseRuleCache.put(assembleReversedGrayReleaseRuleKey(ruleItemDTO
-              .getClientAppId(), ruleCache.getNamespaceName(), clientIp), ruleCache.getRuleId());
+          reversedGrayReleaseRuleCache
+              .put(assembleReversedGrayReleaseRuleKey(ruleItemDTO.getClientAppId(),
+                  ruleCache.getNamespaceName(), clientIp), ruleCache.getRuleId());
         }
       }
     }
@@ -225,8 +225,9 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
     grayReleaseRuleCache.remove(key, ruleCache);
     for (GrayReleaseRuleItemDTO ruleItemDTO : ruleCache.getRuleItems()) {
       for (String clientIp : ruleItemDTO.getClientIpList()) {
-        reversedGrayReleaseRuleCache.remove(assembleReversedGrayReleaseRuleKey(ruleItemDTO
-            .getClientAppId(), ruleCache.getNamespaceName(), clientIp), ruleCache.getRuleId());
+        reversedGrayReleaseRuleCache
+            .remove(assembleReversedGrayReleaseRuleKey(ruleItemDTO.getClientAppId(),
+                ruleCache.getNamespaceName(), clientIp), ruleCache.getRuleId());
       }
     }
   }
@@ -241,9 +242,10 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
       logger.error("parse rule for gray release rule {} failed", grayReleaseRule.getId(), ex);
     }
 
-    GrayReleaseRuleCache ruleCache = new GrayReleaseRuleCache(grayReleaseRule.getId(),
-        grayReleaseRule.getBranchName(), grayReleaseRule.getNamespaceName(), grayReleaseRule
-        .getReleaseId(), grayReleaseRule.getBranchStatus(), loadVersion.get(), ruleItems);
+    GrayReleaseRuleCache ruleCache =
+        new GrayReleaseRuleCache(grayReleaseRule.getId(), grayReleaseRule.getBranchName(),
+            grayReleaseRule.getNamespaceName(), grayReleaseRule.getReleaseId(),
+            grayReleaseRule.getBranchStatus(), loadVersion.get(), ruleItems);
 
     return ruleCache;
   }
@@ -260,13 +262,13 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
     return TimeUnit.SECONDS;
   }
 
-  private String assembleGrayReleaseRuleKey(String configAppId, String configCluster, String
-      configNamespaceName) {
+  private String assembleGrayReleaseRuleKey(String configAppId, String configCluster,
+      String configNamespaceName) {
     return STRING_JOINER.join(configAppId, configCluster, configNamespaceName);
   }
 
-  private String assembleReversedGrayReleaseRuleKey(String clientAppId, String
-      clientNamespaceName, String clientIp) {
+  private String assembleReversedGrayReleaseRuleKey(String clientAppId, String clientNamespaceName,
+      String clientIp) {
     return STRING_JOINER.join(clientAppId, clientNamespaceName, clientIp);
   }
 

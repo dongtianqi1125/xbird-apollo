@@ -32,9 +32,9 @@ public class AuditService {
     audit.setDataChangeCreatedBy(owner);
     auditRepository.save(audit);
   }
-  
+
   @Transactional
-  void audit(Audit audit){
+  void audit(Audit audit) {
     auditRepository.save(audit);
   }
 }

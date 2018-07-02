@@ -35,8 +35,8 @@ public class ReleaseMessageScanner implements InitializingBean {
 
   public ReleaseMessageScanner() {
     listeners = Lists.newCopyOnWriteArrayList();
-    executorService = Executors.newScheduledThreadPool(1, ApolloThreadFactory
-        .create("ReleaseMessageScanner", true));
+    executorService = Executors.newScheduledThreadPool(1,
+        ApolloThreadFactory.create("ReleaseMessageScanner", true));
   }
 
   @Override
@@ -44,7 +44,8 @@ public class ReleaseMessageScanner implements InitializingBean {
     databaseScanInterval = bizConfig.releaseMessageScanIntervalInMilli();
     maxIdScanned = loadLargestMessageId();
     executorService.scheduleWithFixedDelay((Runnable) () -> {
-      Transaction transaction = Tracer.newTransaction("Apollo.ReleaseMessageScanner", "scanMessage");
+      Transaction transaction =
+          Tracer.newTransaction("Apollo.ReleaseMessageScanner", "scanMessage");
       try {
         scanMessages();
         transaction.setStatus(Transaction.SUCCESS);
@@ -60,6 +61,7 @@ public class ReleaseMessageScanner implements InitializingBean {
 
   /**
    * add message listeners for release message
+   * 
    * @param listener
    */
   public void addMessageListener(ReleaseMessageListener listener) {
@@ -84,7 +86,7 @@ public class ReleaseMessageScanner implements InitializingBean {
    * @return whether there are more messages
    */
   private boolean scanAndSendMessages() {
-    //current batch is 500
+    // current batch is 500
     List<ReleaseMessage> releaseMessages =
         releaseMessageRepository.findFirst500ByIdGreaterThanOrderByIdAsc(maxIdScanned);
     if (CollectionUtils.isEmpty(releaseMessages)) {
@@ -98,6 +100,7 @@ public class ReleaseMessageScanner implements InitializingBean {
 
   /**
    * find largest message id as the current start point
+   * 
    * @return current largest message id
    */
   private long loadLargestMessageId() {
@@ -107,6 +110,7 @@ public class ReleaseMessageScanner implements InitializingBean {
 
   /**
    * Notify listeners with messages loaded
+   * 
    * @param messages
    */
   private void fireMessageScanned(List<ReleaseMessage> messages) {

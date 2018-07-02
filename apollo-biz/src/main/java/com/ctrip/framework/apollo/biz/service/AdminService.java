@@ -23,15 +23,10 @@ public class AdminService {
   public App createNewApp(App app) {
     String createBy = app.getDataChangeCreatedBy();
     App createdApp = appService.save(app);
-
     String appId = createdApp.getAppId();
-
     appNamespaceService.createDefaultAppNamespace(appId, createBy);
-
     clusterService.createDefaultCluster(appId, createBy);
-
     namespaceService.instanceOfAppNamespaces(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, createBy);
-
     return app;
   }
 

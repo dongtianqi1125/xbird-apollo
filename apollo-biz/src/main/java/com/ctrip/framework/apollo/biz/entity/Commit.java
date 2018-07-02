@@ -74,7 +74,8 @@ public class Commit extends BaseEntity {
 
   @Override
   public String toString() {
-    return toStringHelper().add("changeSets", changeSets).add("appId", appId).add("clusterName", clusterName)
-        .add("namespaceName", namespaceName).add("comment", comment).toString();
+    return toStringHelper().add("changeSets", changeSets).add("appId", appId)
+        .add("clusterName", clusterName).add("namespaceName", namespaceName).add("comment", comment)
+        .toString();
   }
 }

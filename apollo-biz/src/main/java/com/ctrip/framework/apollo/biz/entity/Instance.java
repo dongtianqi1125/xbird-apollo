@@ -108,15 +108,9 @@ public class Instance {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .omitNullValues()
-        .add("id", id)
-        .add("appId", appId)
-        .add("clusterName", clusterName)
-        .add("dataCenter", dataCenter)
-        .add("ip", ip)
+    return MoreObjects.toStringHelper(this).omitNullValues().add("id", id).add("appId", appId)
+        .add("clusterName", clusterName).add("dataCenter", dataCenter).add("ip", ip)
         .add("dataChangeCreatedTime", dataChangeCreatedTime)
-        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime)
-        .toString();
+        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime).toString();
   }
 }

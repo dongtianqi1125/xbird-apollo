@@ -29,13 +29,14 @@ public class ItemSetService {
   private ItemService itemService;
 
   @Transactional
-  public ItemChangeSets updateSet(Namespace namespace, ItemChangeSets changeSets){
-    return updateSet(namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName(), changeSets);
+  public ItemChangeSets updateSet(Namespace namespace, ItemChangeSets changeSets) {
+    return updateSet(namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName(),
+        changeSets);
   }
 
   @Transactional
-  public ItemChangeSets updateSet(String appId, String clusterName,
-                                  String namespaceName, ItemChangeSets changeSet) {
+  public ItemChangeSets updateSet(String appId, String clusterName, String namespaceName,
+      ItemChangeSets changeSet) {
     String operator = changeSet.getDataChangeLastModifiedBy();
     ConfigChangeContentBuilder configChangeContentBuilder = new ConfigChangeContentBuilder();
 
@@ -60,7 +61,7 @@ public class ItemSetService {
         }
         Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedItem);
 
-        //protect. only value,comment,lastModifiedBy,lineNum can be modified
+        // protect. only value,comment,lastModifiedBy,lineNum can be modified
         managedItem.setValue(entity.getValue());
         managedItem.setComment(entity.getComment());
         managedItem.setLineNum(entity.getLineNum());
@@ -81,17 +82,16 @@ public class ItemSetService {
       auditService.audit("ItemSet", null, Audit.OP.DELETE, operator);
     }
 
-    if (configChangeContentBuilder.hasContent()){
+    if (configChangeContentBuilder.hasContent()) {
       createCommit(appId, clusterName, namespaceName, configChangeContentBuilder.build(),
-                   changeSet.getDataChangeLastModifiedBy());
+          changeSet.getDataChangeLastModifiedBy());
     }
 
     return changeSet;
-
   }
 
-  private void createCommit(String appId, String clusterName, String namespaceName, String configChangeContent,
-                            String operator) {
+  private void createCommit(String appId, String clusterName, String namespaceName,
+      String configChangeContent, String operator) {
 
     Commit commit = new Commit();
     commit.setAppId(appId);

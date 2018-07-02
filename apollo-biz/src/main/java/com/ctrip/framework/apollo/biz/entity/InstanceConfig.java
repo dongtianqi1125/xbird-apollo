@@ -136,15 +136,10 @@ public class InstanceConfig {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .omitNullValues()
-        .add("id", id)
-        .add("configAppId", configAppId)
-        .add("configClusterName", configClusterName)
-        .add("configNamespaceName", configNamespaceName)
-        .add("releaseKey", releaseKey)
+    return MoreObjects.toStringHelper(this).omitNullValues().add("id", id)
+        .add("configAppId", configAppId).add("configClusterName", configClusterName)
+        .add("configNamespaceName", configNamespaceName).add("releaseKey", releaseKey)
         .add("dataChangeCreatedTime", dataChangeCreatedTime)
-        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime)
-        .toString();
+        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime).toString();
   }
 }
