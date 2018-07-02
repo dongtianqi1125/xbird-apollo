@@ -19,7 +19,8 @@ public class GrayReleaseRuleDTO extends BaseDTO {
 
   private Long releaseId;
 
-  public GrayReleaseRuleDTO(String appId, String clusterName, String namespaceName, String branchName) {
+  public GrayReleaseRuleDTO(String appId, String clusterName, String namespaceName,
+      String branchName) {
     this.appId = appId;
     this.clusterName = clusterName;
     this.namespaceName = namespaceName;

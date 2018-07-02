@@ -28,7 +28,7 @@ public class MultiResponseEntity<T> {
   }
 
   public void addResponseEntity(RichResponseEntity<T> responseEntity) {
-    if (responseEntity == null){
+    if (responseEntity == null) {
       throw new IllegalArgumentException("sub response entity can not be null");
     }
     entities.add(responseEntity);

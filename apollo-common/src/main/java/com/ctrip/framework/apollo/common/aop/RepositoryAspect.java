@@ -22,16 +22,16 @@ public class RepositoryAspect {
     String name =
         joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + joinPoint.getSignature()
             .getName();
-    Transaction catTransaction = Tracer.newTransaction("SQL", name);
+    Transaction transaction = Tracer.newTransaction("SQL", name);
     try {
       Object result = joinPoint.proceed();
-      catTransaction.setStatus(Transaction.SUCCESS);
+      transaction.setStatus(Transaction.SUCCESS);
       return result;
     } catch (Throwable ex) {
-      catTransaction.setStatus(ex);
+      transaction.setStatus(ex);
       throw ex;
     } finally {
-      catTransaction.complete();
+      transaction.complete();
     }
   }
 }

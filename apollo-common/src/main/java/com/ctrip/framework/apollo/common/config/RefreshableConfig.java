@@ -25,8 +25,8 @@ public abstract class RefreshableConfig {
   private static final Logger logger = LoggerFactory.getLogger(RefreshableConfig.class);
 
   private static final String LIST_SEPARATOR = ",";
-  //TimeUnit: second
-  private static final int CONFIG_REFRESH_INTERVAL = 60;
+
+  private static final int CONFIG_REFRESH_INTERVAL = 60; // TimeUnit: second
 
   protected Splitter splitter = Splitter.on(LIST_SEPARATOR).omitEmptyStrings().trimResults();
 
@@ -36,8 +36,7 @@ public abstract class RefreshableConfig {
   private List<RefreshablePropertySource> propertySources;
 
   /**
-   * register refreshable property source.
-   * Notice: The front property source has higher priority.
+   * register refreshable property source. Notice: The front property source has higher priority.
    */
   protected abstract List<RefreshablePropertySource> getRefreshablePropertySources();
 
@@ -49,26 +48,24 @@ public abstract class RefreshableConfig {
       throw new IllegalStateException("Property sources can not be empty.");
     }
 
-    //add property source to environment
+    // add property source to environment
     for (RefreshablePropertySource propertySource : propertySources) {
       propertySource.refresh();
       environment.getPropertySources().addLast(propertySource);
     }
 
-    //task to update configs
-    ScheduledExecutorService
-        executorService =
+    // task to update configs
+    ScheduledExecutorService executorService =
         Executors.newScheduledThreadPool(1, ApolloThreadFactory.create("ConfigRefresher", true));
 
-    executorService
-        .scheduleWithFixedDelay(() -> {
-          try {
-            propertySources.forEach(RefreshablePropertySource::refresh);
-          } catch (Throwable t) {
-            logger.error("Refresh configs failed.", t);
-            Tracer.logError("Refresh configs failed.", t);
-          }
-        }, CONFIG_REFRESH_INTERVAL, CONFIG_REFRESH_INTERVAL, TimeUnit.SECONDS);
+    executorService.scheduleWithFixedDelay(() -> {
+      try {
+        propertySources.forEach(RefreshablePropertySource::refresh);
+      } catch (Throwable t) {
+        logger.error("Refresh configs failed.", t);
+        Tracer.logError("Refresh configs failed.", t);
+      }
+    }, CONFIG_REFRESH_INTERVAL, CONFIG_REFRESH_INTERVAL, TimeUnit.SECONDS);
   }
 
   public int getIntProperty(String key, int defaultValue) {

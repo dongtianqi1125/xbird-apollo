@@ -80,17 +80,14 @@ public class App extends BaseEntity {
   }
 
   public String toString() {
-    return toStringHelper().add("name", name).add("appId", appId)
-        .add("orgId", orgId)
-        .add("orgName", orgName)
-        .add("ownerName", ownerName)
-        .add("ownerEmail", ownerEmail).toString();
+    return toStringHelper().add("name", name).add("appId", appId).add("orgId", orgId)
+        .add("orgName", orgName).add("ownerName", ownerName).add("ownerEmail", ownerEmail)
+        .toString();
   }
 
   public static class Builder {
 
-    public Builder() {
-    }
+    public Builder() {}
 
     private App app = new App();
 

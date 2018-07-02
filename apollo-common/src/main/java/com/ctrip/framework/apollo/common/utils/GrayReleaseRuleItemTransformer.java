@@ -13,8 +13,8 @@ import java.util.Set;
  */
 public class GrayReleaseRuleItemTransformer {
   private static final Gson gson = new Gson();
-  private static final Type grayReleaseRuleItemsType = new TypeToken<Set<GrayReleaseRuleItemDTO>>() {
-  }.getType();
+  private static final Type grayReleaseRuleItemsType =
+      new TypeToken<Set<GrayReleaseRuleItemDTO>>() {}.getType();
 
   public static Set<GrayReleaseRuleItemDTO> batchTransformFromJSON(String content) {
     return gson.fromJson(content, grayReleaseRuleItemsType);

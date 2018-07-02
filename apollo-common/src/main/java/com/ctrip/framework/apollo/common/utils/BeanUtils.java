@@ -154,7 +154,7 @@ public class BeanUtils {
       if (field == null) throw new IllegalArgumentException("Could not find the key");
       field.setAccessible(true);
       for (Object o : list) {
-        set.add((K)field.get(o));
+        set.add((K) field.get(o));
       }
     } catch (Exception e) {
       throw new BeanUtilsException(e);
@@ -227,6 +227,7 @@ public class BeanUtils {
   public static void copyEntityProperties(Object source, Object target) {
     org.springframework.beans.BeanUtils.copyProperties(source, target, COPY_IGNORED_PROPERTIES);
   }
-  
-  private static final String[] COPY_IGNORED_PROPERTIES = {"id", "dataChangeCreatedBy", "dataChangeCreatedTime", "dataChangeLastModifiedTime"};
+
+  private static final String[] COPY_IGNORED_PROPERTIES =
+      {"id", "dataChangeCreatedBy", "dataChangeCreatedTime", "dataChangeLastModifiedTime"};
 }

@@ -6,7 +6,6 @@ import java.util.Map;
 
 public abstract class RefreshablePropertySource extends MapPropertySource {
 
-
   public RefreshablePropertySource(String name, Map<String, Object> source) {
     super(name, source);
   }
