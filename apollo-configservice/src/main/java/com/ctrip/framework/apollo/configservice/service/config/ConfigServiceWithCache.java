@@ -36,7 +36,7 @@ import javax.annotation.PostConstruct;
  */
 public class ConfigServiceWithCache extends AbstractConfigService {
   private static final Logger logger = LoggerFactory.getLogger(ConfigServiceWithCache.class);
-  private static final long DEFAULT_EXPIRED_AFTER_ACCESS_IN_MINUTES = 60;//1 hour
+  private static final long DEFAULT_EXPIRED_AFTER_ACCESS_IN_MINUTES = 60;// 1 hour
   private static final String TRACER_EVENT_CACHE_INVALIDATE = "ConfigCache.Invalidate";
   private static final String TRACER_EVENT_CACHE_LOAD = "ConfigCache.LoadFromDB";
   private static final String TRACER_EVENT_CACHE_LOAD_ID = "ConfigCache.LoadFromDBById";
@@ -77,17 +77,19 @@ public class ConfigServiceWithCache extends AbstractConfigService {
 
             Transaction transaction = Tracer.newTransaction(TRACER_EVENT_CACHE_LOAD, key);
             try {
-              ReleaseMessage latestReleaseMessage = releaseMessageService.findLatestReleaseMessageForMessages(Lists
-                  .newArrayList(key));
-              Release latestRelease = releaseService.findLatestActiveRelease(namespaceInfo.get(0), namespaceInfo.get(1),
-                  namespaceInfo.get(2));
+              ReleaseMessage latestReleaseMessage = releaseMessageService
+                  .findLatestReleaseMessageForMessages(Lists.newArrayList(key));
+              Release latestRelease = releaseService.findLatestActiveRelease(namespaceInfo.get(0),
+                  namespaceInfo.get(1), namespaceInfo.get(2));
 
               transaction.setStatus(Transaction.SUCCESS);
 
-              long notificationId = latestReleaseMessage == null ? ConfigConsts.NOTIFICATION_ID_PLACEHOLDER : latestReleaseMessage
-                  .getId();
+              long notificationId = latestReleaseMessage == null
+                  ? ConfigConsts.NOTIFICATION_ID_PLACEHOLDER
+                  : latestReleaseMessage.getId();
 
-              if (notificationId == ConfigConsts.NOTIFICATION_ID_PLACEHOLDER && latestRelease == null) {
+              if (notificationId == ConfigConsts.NOTIFICATION_ID_PLACEHOLDER
+                  && latestRelease == null) {
                 return nullConfigCacheEntry;
               }
 
@@ -105,7 +107,8 @@ public class ConfigServiceWithCache extends AbstractConfigService {
         .build(new CacheLoader<Long, Optional<Release>>() {
           @Override
           public Optional<Release> load(Long key) throws Exception {
-            Transaction transaction = Tracer.newTransaction(TRACER_EVENT_CACHE_LOAD_ID, String.valueOf(key));
+            Transaction transaction =
+                Tracer.newTransaction(TRACER_EVENT_CACHE_LOAD_ID, String.valueOf(key));
             try {
               Release release = releaseService.findActiveOne(key);
 
@@ -130,17 +133,17 @@ public class ConfigServiceWithCache extends AbstractConfigService {
 
   @Override
   protected Release findLatestActiveRelease(String appId, String clusterName, String namespaceName,
-                                            ApolloNotificationMessages clientMessages) {
+      ApolloNotificationMessages clientMessages) {
     String key = ReleaseMessageKeyGenerator.generate(appId, clusterName, namespaceName);
 
     Tracer.logEvent(TRACER_EVENT_CACHE_GET, key);
 
     ConfigCacheEntry cacheEntry = configCache.getUnchecked(key);
 
-    //cache is out-dated
-    if (clientMessages != null && clientMessages.has(key) &&
-        clientMessages.get(key) > cacheEntry.getNotificationId()) {
-      //invalidate the cache and try to load from db again
+    // cache is out-dated
+    if (clientMessages != null && clientMessages.has(key)
+        && clientMessages.get(key) > cacheEntry.getNotificationId()) {
+      // invalidate the cache and try to load from db again
       invalidate(key);
       cacheEntry = configCache.getUnchecked(key);
     }
@@ -156,17 +159,18 @@ public class ConfigServiceWithCache extends AbstractConfigService {
   @Override
   public void handleMessage(ReleaseMessage message, String channel) {
     logger.info("message received - channel: {}, message: {}", channel, message);
-    if (!Topics.APOLLO_RELEASE_TOPIC.equals(channel) || Strings.isNullOrEmpty(message.getMessage())) {
+    if (!Topics.APOLLO_RELEASE_TOPIC.equals(channel)
+        || Strings.isNullOrEmpty(message.getMessage())) {
       return;
     }
 
     try {
       invalidate(message.getMessage());
 
-      //warm up the cache
+      // warm up the cache
       configCache.getUnchecked(message.getMessage());
     } catch (Throwable ex) {
-      //ignore
+      // ignore
     }
   }
 

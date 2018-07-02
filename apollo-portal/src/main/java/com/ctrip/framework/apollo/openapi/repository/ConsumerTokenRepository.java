@@ -13,7 +13,7 @@ public interface ConsumerTokenRepository extends PagingAndSortingRepository<Cons
   /**
    * find consumer token by token
    *
-   * @param token     the token
+   * @param token the token
    * @param validDate the date when the token is valid
    */
   ConsumerToken findTopByTokenAndExpiresAfter(String token, Date validDate);

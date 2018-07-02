@@ -97,14 +97,9 @@ public class ConsumerAudit {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .omitNullValues()
-        .add("id", id)
-        .add("consumerId", consumerId)
-        .add("uri", uri)
-        .add("method", method)
+    return MoreObjects.toStringHelper(this).omitNullValues().add("id", id)
+        .add("consumerId", consumerId).add("uri", uri).add("method", method)
         .add("dataChangeCreatedTime", dataChangeCreatedTime)
-        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime)
-        .toString();
+        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime).toString();
   }
 }

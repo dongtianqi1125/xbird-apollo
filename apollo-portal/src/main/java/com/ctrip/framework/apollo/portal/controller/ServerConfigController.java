@@ -35,22 +35,18 @@ public class ServerConfigController {
 
     checkModel(Objects.nonNull(serverConfig));
     RequestPrecondition.checkArgumentsNotEmpty(serverConfig.getKey(), serverConfig.getValue());
-
     String modifiedBy = userInfoHolder.getUser().getUserId();
-
     ServerConfig storedConfig = serverConfigRepository.findByKey(serverConfig.getKey());
 
-    if (Objects.isNull(storedConfig)) {//create
+    if (Objects.isNull(storedConfig)) {// create
       serverConfig.setDataChangeCreatedBy(modifiedBy);
       serverConfig.setDataChangeLastModifiedBy(modifiedBy);
       return serverConfigRepository.save(serverConfig);
-    } else {//update
+    } else {// update
       BeanUtils.copyEntityProperties(serverConfig, storedConfig);
       storedConfig.setDataChangeLastModifiedBy(modifiedBy);
       return serverConfigRepository.save(storedConfig);
     }
-
   }
-
 
 }

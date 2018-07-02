@@ -17,6 +17,7 @@ import com.google.inject.Singleton;
 
 /**
  * Guice injector
+ * 
  * @author Jason Song(song_s@ctrip.com)
  */
 public class DefaultInjector implements Injector {
@@ -26,7 +27,8 @@ public class DefaultInjector implements Injector {
     try {
       m_injector = Guice.createInjector(new ApolloModule());
     } catch (Throwable ex) {
-      ApolloConfigException exception = new ApolloConfigException("Unable to initialize Guice Injector!", ex);
+      ApolloConfigException exception =
+          new ApolloConfigException("Unable to initialize Guice Injector!", ex);
       Tracer.logError(exception);
       throw exception;
     }
@@ -45,7 +47,7 @@ public class DefaultInjector implements Injector {
 
   @Override
   public <T> T getInstance(Class<T> clazz, String name) {
-    //Guice does not support get instance by type and name
+    // Guice does not support get instance by type and name
     return null;
   }
 

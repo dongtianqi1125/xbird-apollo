@@ -12,7 +12,6 @@ public class RollbackEmailBuilder extends ConfigPublishEmailBuilder {
 
   private static final String EMAIL_SUBJECT = "[Apollo] 配置回滚";
 
-
   @Override
   protected String subject() {
     return EMAIL_SUBJECT;

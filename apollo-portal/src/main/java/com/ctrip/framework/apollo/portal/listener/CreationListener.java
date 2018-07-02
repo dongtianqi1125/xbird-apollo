@@ -37,21 +37,25 @@ public class CreationListener {
         appAPI.createApp(env, appDTO);
       } catch (Throwable e) {
         logger.error("Create app failed. appId = {}, env = {})", appDTO.getAppId(), env, e);
-        Tracer.logError(String.format("Create app failed. appId = %s, env = %s", appDTO.getAppId(), env), e);
+        Tracer.logError(
+            String.format("Create app failed. appId = %s, env = %s", appDTO.getAppId(), env), e);
       }
     }
   }
 
   @EventListener
   public void onAppNamespaceCreationEvent(AppNamespaceCreationEvent event) {
-    AppNamespaceDTO appNamespace = BeanUtils.transfrom(AppNamespaceDTO.class, event.getAppNamespace());
+    AppNamespaceDTO appNamespace =
+        BeanUtils.transfrom(AppNamespaceDTO.class, event.getAppNamespace());
     List<Env> envs = portalSettings.getActiveEnvs();
     for (Env env : envs) {
       try {
         namespaceAPI.createAppNamespace(env, appNamespace);
       } catch (Throwable e) {
-        logger.error("Create appNamespace failed. appId = {}, env = {}", appNamespace.getAppId(), env, e);
-        Tracer.logError(String.format("Create appNamespace failed. appId = %s, env = %s", appNamespace.getAppId(), env), e);
+        logger.error("Create appNamespace failed. appId = {}, env = {}", appNamespace.getAppId(),
+            env, e);
+        Tracer.logError(String.format("Create appNamespace failed. appId = %s, env = %s",
+            appNamespace.getAppId(), env), e);
       }
     }
   }

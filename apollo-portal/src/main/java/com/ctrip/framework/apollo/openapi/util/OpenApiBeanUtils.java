@@ -29,8 +29,7 @@ public class OpenApiBeanUtils {
 
   private static Gson gson = new Gson();
   @SuppressWarnings("serial")
-  private static Type type = new TypeToken<Map<String, String>>() {
-  }.getType();
+  private static Type type = new TypeToken<Map<String, String>>() {}.getType();
 
   public static OpenItemDTO transformFromItemDTO(ItemDTO item) {
     Preconditions.checkArgument(item != null);
@@ -66,28 +65,28 @@ public class OpenApiBeanUtils {
   public static OpenNamespaceDTO transformFromNamespaceBO(NamespaceBO namespaceBO) {
     Preconditions.checkArgument(namespaceBO != null);
 
-    OpenNamespaceDTO openNamespaceDTO = BeanUtils.transfrom(OpenNamespaceDTO.class, namespaceBO
-        .getBaseInfo());
+    OpenNamespaceDTO openNamespaceDTO =
+        BeanUtils.transfrom(OpenNamespaceDTO.class, namespaceBO.getBaseInfo());
 
-    //app namespace info
+    // app namespace info
     openNamespaceDTO.setFormat(namespaceBO.getFormat());
     openNamespaceDTO.setComment(namespaceBO.getComment());
     openNamespaceDTO.setPublic(namespaceBO.isPublic());
 
-    //items
+    // items
     List<OpenItemDTO> items = new LinkedList<>();
     List<ItemBO> itemBOs = namespaceBO.getItems();
     if (!CollectionUtils.isEmpty(itemBOs)) {
-      items.addAll(itemBOs.stream().map(itemBO -> transformFromItemDTO(itemBO.getItem())).collect
-          (Collectors.toList()));
+      items.addAll(itemBOs.stream().map(itemBO -> transformFromItemDTO(itemBO.getItem()))
+          .collect(Collectors.toList()));
     }
     openNamespaceDTO.setItems(items);
     return openNamespaceDTO;
 
   }
 
-  public static List<OpenNamespaceDTO> batchTransformFromNamespaceBOs(List<NamespaceBO>
-                                                                          namespaceBOs) {
+  public static List<OpenNamespaceDTO> batchTransformFromNamespaceBOs(
+      List<NamespaceBO> namespaceBOs) {
     if (CollectionUtils.isEmpty(namespaceBOs)) {
       return Collections.emptyList();
     }
@@ -100,8 +99,7 @@ public class OpenApiBeanUtils {
   }
 
   public static OpenNamespaceLockDTO transformFromNamespaceLockDTO(String namespaceName,
-                                                                   NamespaceLockDTO
-                                                                       namespaceLock) {
+      NamespaceLockDTO namespaceLock) {
     OpenNamespaceLockDTO lock = new OpenNamespaceLockDTO();
 
     lock.setNamespaceName(namespaceName);

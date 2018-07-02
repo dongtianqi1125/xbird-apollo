@@ -46,7 +46,8 @@ public class AppNamespaceService {
   @Transactional
   public void createDefaultAppNamespace(String appId) {
     if (!isAppNamespaceNameUnique(appId, ConfigConsts.NAMESPACE_APPLICATION)) {
-      throw new BadRequestException(String.format("App already has application namespace. AppId = %s", appId));
+      throw new BadRequestException(
+          String.format("App already has application namespace. AppId = %s", appId));
     }
 
     AppNamespace appNs = new AppNamespace();
@@ -71,18 +72,19 @@ public class AppNamespaceService {
   public AppNamespace createAppNamespaceInLocal(AppNamespace appNamespace) {
     String appId = appNamespace.getAppId();
 
-    //add app org id as prefix
+    // add app org id as prefix
     App app = appService.load(appId);
     if (app == null) {
       throw new BadRequestException("App not exist. AppId = " + appId);
     }
 
     StringBuilder appNamespaceName = new StringBuilder();
-    //add prefix postfix
-    appNamespaceName
-        .append(appNamespace.isPublic() ? app.getOrgId() + "." : "")
+    // add prefix postfix
+    appNamespaceName.append(appNamespace.isPublic() ? app.getOrgId() + "." : "")
         .append(appNamespace.getName())
-        .append(appNamespace.formatAsEnum() == ConfigFileFormat.Properties ? "" : "." + appNamespace.getFormat());
+        .append(appNamespace.formatAsEnum() == ConfigFileFormat.Properties
+            ? ""
+            : "." + appNamespace.getFormat());
     appNamespace.setName(appNamespaceName.toString());
 
     if (appNamespace.getComment() == null) {
@@ -90,7 +92,8 @@ public class AppNamespaceService {
     }
 
     if (!ConfigFileFormat.isValidFormat(appNamespace.getFormat())) {
-     throw new BadRequestException("Invalid namespace format. format must be properties、json、yaml、yml、xml");
+      throw new BadRequestException(
+          "Invalid namespace format. format must be properties、json、yaml、yml、xml");
     }
 
     String operator = appNamespace.getDataChangeCreatedBy();
@@ -106,14 +109,15 @@ public class AppNamespaceService {
       throw new BadRequestException(appNamespace.getName() + "已存在");
     }
 
-    if (!appNamespace.isPublic() &&
-        appNamespaceRepository.findByAppIdAndName(appNamespace.getAppId(), appNamespace.getName()) != null) {
+    if (!appNamespace.isPublic() && appNamespaceRepository
+        .findByAppIdAndName(appNamespace.getAppId(), appNamespace.getName()) != null) {
       throw new BadRequestException(appNamespace.getName() + "已存在");
     }
 
     AppNamespace createdAppNamespace = appNamespaceRepository.save(appNamespace);
 
-    roleInitializationService.initNamespaceRoles(appNamespace.getAppId(), appNamespace.getName(), operator);
+    roleInitializationService.initNamespaceRoles(appNamespace.getAppId(), appNamespace.getName(),
+        operator);
 
     return createdAppNamespace;
   }

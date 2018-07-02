@@ -9,7 +9,7 @@ import org.springframework.core.MethodParameter;
 /**
  * Spring @Value method info
  *
- * @author github.com/zhegexiaohuozi  seimimaster@gmail.com
+ * @author github.com/zhegexiaohuozi seimimaster@gmail.com
  * @since 2018/2/6.
  */
 public class SpringValue {
@@ -24,7 +24,8 @@ public class SpringValue {
   private Type genericType;
   private boolean isJson;
 
-  public SpringValue(String key, String placeholder, Object bean, String beanName, Field field, boolean isJson) {
+  public SpringValue(String key, String placeholder, Object bean, String beanName, Field field,
+      boolean isJson) {
     this.bean = bean;
     this.beanName = beanName;
     this.field = field;
@@ -32,12 +33,13 @@ public class SpringValue {
     this.placeholder = placeholder;
     this.targetType = field.getType();
     this.isJson = isJson;
-    if(isJson){
+    if (isJson) {
       this.genericType = field.getGenericType();
     }
   }
 
-  public SpringValue(String key, String placeholder, Object bean, String beanName, Method method, boolean isJson) {
+  public SpringValue(String key, String placeholder, Object bean, String beanName, Method method,
+      boolean isJson) {
     this.bean = bean;
     this.beanName = beanName;
     this.methodParameter = new MethodParameter(method, 0);
@@ -46,7 +48,7 @@ public class SpringValue {
     Class<?>[] paramTps = method.getParameterTypes();
     this.targetType = paramTps[0];
     this.isJson = isJson;
-    if(isJson){
+    if (isJson) {
       this.genericType = method.getGenericParameterTypes()[0];
     }
   }
@@ -106,10 +108,10 @@ public class SpringValue {
   @Override
   public String toString() {
     if (isField()) {
-      return String
-          .format("key: %s, beanName: %s, field: %s.%s", key, beanName, bean.getClass().getName(), field.getName());
+      return String.format("key: %s, beanName: %s, field: %s.%s", key, beanName,
+          bean.getClass().getName(), field.getName());
     }
-    return String.format("key: %s, beanName: %s, method: %s.%s", key, beanName, bean.getClass().getName(),
-        methodParameter.getMethod().getName());
+    return String.format("key: %s, beanName: %s, method: %s.%s", key, beanName,
+        bean.getClass().getName(), methodParameter.getMethod().getName());
   }
 }

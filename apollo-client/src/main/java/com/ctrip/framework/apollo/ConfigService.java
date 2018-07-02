@@ -73,7 +73,7 @@ public class ConfigService {
    * Manually set the config for the namespace specified, use with caution.
    *
    * @param namespace the namespace
-   * @param config    the config instance
+   * @param config the config instance
    */
   static void setConfig(String namespace, final Config config) {
     s_instance.getRegistry().register(namespace, new ConfigFactory() {
@@ -98,7 +98,7 @@ public class ConfigService {
    * Manually set the config factory for the namespace specified, use with caution.
    *
    * @param namespace the namespace
-   * @param factory   the factory instance
+   * @param factory the factory instance
    */
   static void setConfigFactory(String namespace, ConfigFactory factory) {
     s_instance.getRegistry().register(namespace, factory);

@@ -34,7 +34,8 @@ public class RoleUtils {
   }
 
   public static String buildReleaseDefaultNamespaceRoleName(String appId) {
-    return STRING_JOINER.join(RoleType.RELEASE_NAMESPACE, appId, ConfigConsts.NAMESPACE_APPLICATION);
+    return STRING_JOINER.join(RoleType.RELEASE_NAMESPACE, appId,
+        ConfigConsts.NAMESPACE_APPLICATION);
   }
 
   public static String buildNamespaceTargetId(String appId, String namespaceName) {
@@ -44,6 +45,5 @@ public class RoleUtils {
   public static String buildDefaultNamespaceTargetId(String appId) {
     return STRING_JOINER.join(appId, ConfigConsts.NAMESPACE_APPLICATION);
   }
-
 
 }

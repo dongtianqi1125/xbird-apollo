@@ -29,7 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 @Service
 public class ConsumerAuditUtil implements InitializingBean {
   private static final int CONSUMER_AUDIT_MAX_SIZE = 10000;
-  private BlockingQueue<ConsumerAudit> audits = Queues.newLinkedBlockingQueue(CONSUMER_AUDIT_MAX_SIZE);
+  private BlockingQueue<ConsumerAudit> audits =
+      Queues.newLinkedBlockingQueue(CONSUMER_AUDIT_MAX_SIZE);
   private final ExecutorService auditExecutorService;
   private final AtomicBoolean auditStopped;
   private int BATCH_SIZE = 100;
@@ -40,13 +41,13 @@ public class ConsumerAuditUtil implements InitializingBean {
   private ConsumerService consumerService;
 
   public ConsumerAuditUtil() {
-    auditExecutorService = Executors.newSingleThreadExecutor(
-        ApolloThreadFactory.create("ConsumerAuditUtil", true));
+    auditExecutorService =
+        Executors.newSingleThreadExecutor(ApolloThreadFactory.create("ConsumerAuditUtil", true));
     auditStopped = new AtomicBoolean(false);
   }
 
   public boolean audit(HttpServletRequest request, long consumerId) {
-    //ignore GET request
+    // ignore GET request
     if ("GET".equalsIgnoreCase(request.getMethod())) {
       return true;
     }
@@ -63,7 +64,7 @@ public class ConsumerAuditUtil implements InitializingBean {
     consumerAudit.setDataChangeCreatedTime(now);
     consumerAudit.setDataChangeLastModifiedTime(now);
 
-    //throw away audits if exceeds the max size
+    // throw away audits if exceeds the max size
     return this.audits.offer(consumerAudit);
   }
 

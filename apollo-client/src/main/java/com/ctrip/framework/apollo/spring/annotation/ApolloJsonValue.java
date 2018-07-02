@@ -7,9 +7,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this annotation to inject json property from Apollo, support the same format as Spring @Value.
+ * Use this annotation to inject json property from Apollo, support the same format as
+ * Spring @Value.
  *
- * <p>Usage example:</p>
+ * <p>
+ * Usage example:
+ * </p>
  * <pre class="code">
  * // Inject the json property value for type SomeObject.
  * // Suppose SomeObject has 2 properties, someString and someInt, then the possible config

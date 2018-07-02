@@ -12,13 +12,12 @@ import com.ctrip.framework.apollo.common.ApolloCommonConfig;
 @EnableAspectJAutoProxy
 @EnableEurekaClient
 @EnableTransactionManagement
-@SpringBootApplication(scanBasePackageClasses = {ApolloCommonConfig.class,
-    ApolloBizConfig.class,
+@SpringBootApplication(scanBasePackageClasses = {ApolloCommonConfig.class, ApolloBizConfig.class,
     AdminServiceApplication.class})
 public class AdminServiceApplication {
-  
+
   public static void main(String[] args) throws Exception {
     SpringApplication.run(AdminServiceApplication.class, args);
   }
-  
+
 }

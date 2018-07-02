@@ -10,6 +10,7 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 public interface ConfigManager {
   /**
    * Get the config instance for the namespace specified.
+   * 
    * @param namespace the namespace
    * @return the config instance for the namespace
    */
@@ -17,6 +18,7 @@ public interface ConfigManager {
 
   /**
    * Get the config file instance for the namespace specified.
+   * 
    * @param namespace the namespace
    * @param configFileFormat the config file format
    * @return the config file instance for the namespace

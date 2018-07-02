@@ -27,8 +27,8 @@ public class NamespaceLockController {
   private BizConfig bizConfig;
 
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/lock", method = RequestMethod.GET)
-  public NamespaceLockDTO getNamespaceLockOwner(@PathVariable String appId, @PathVariable String clusterName,
-                                                @PathVariable String namespaceName) {
+  public NamespaceLockDTO getNamespaceLockOwner(@PathVariable String appId,
+      @PathVariable String clusterName, @PathVariable String namespaceName) {
     Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
     if (namespace == null) {
       throw new BadRequestException("namespace not exist.");

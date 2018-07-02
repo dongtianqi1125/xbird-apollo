@@ -14,7 +14,9 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 /**
  * Use this annotation to register Apollo property sources when using Java Config.
  *
- * <p>Configuration example:</p>
+ * <p>
+ * Configuration example:
+ * </p>
  * <pre class="code">
  * &#064;Configuration
  * &#064;EnableApolloConfig({"someNamespace","anotherNamespace"})
@@ -36,8 +38,10 @@ public @interface EnableApolloConfig {
   String[] value() default {ConfigConsts.NAMESPACE_APPLICATION};
 
   /**
-   * The order of the apollo config, default is {@link Ordered#LOWEST_PRECEDENCE}, which is Integer.MAX_VALUE.
-   * If there are properties with the same name in different apollo configs, the apollo config with smaller order wins.
+   * The order of the apollo config, default is {@link Ordered#LOWEST_PRECEDENCE}, which is
+   * Integer.MAX_VALUE. If there are properties with the same name in different apollo configs, the
+   * apollo config with smaller order wins.
+   * 
    * @return
    */
   int order() default Ordered.LOWEST_PRECEDENCE;

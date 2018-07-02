@@ -23,7 +23,7 @@ public class CommitController {
 
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/commit", method = RequestMethod.GET)
   public List<CommitDTO> find(@PathVariable String appId, @PathVariable String clusterName,
-                              @PathVariable String namespaceName, Pageable pageable){
+      @PathVariable String namespaceName, Pageable pageable) {
 
     List<Commit> commits = commitService.find(appId, clusterName, namespaceName, pageable);
     return BeanUtils.batchTransform(CommitDTO.class, commits);

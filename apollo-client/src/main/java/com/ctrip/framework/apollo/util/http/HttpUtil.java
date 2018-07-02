@@ -33,7 +33,7 @@ public class HttpUtil {
   /**
    * Do get operation for the http request.
    *
-   * @param httpRequest  the request
+   * @param httpRequest the request
    * @param responseType the response type
    * @return the response
    * @throws ApolloConfigException if any error happened or response code is neither 200 nor 304
@@ -52,7 +52,7 @@ public class HttpUtil {
   /**
    * Do get operation for the http request.
    *
-   * @param httpRequest  the request
+   * @param httpRequest the request
    * @param responseType the response type
    * @return the response
    * @throws ApolloConfigException if any error happened or response code is neither 200 nor 304
@@ -69,7 +69,7 @@ public class HttpUtil {
   }
 
   private <T> HttpResponse<T> doGetWithSerializeFunction(HttpRequest httpRequest,
-                                                         Function<String, T> serializeFunction) {
+      Function<String, T> serializeFunction) {
     InputStreamReader isr = null;
     InputStreamReader esr = null;
     int statusCode;
@@ -101,9 +101,10 @@ public class HttpUtil {
         response = CharStreams.toString(isr);
       } catch (IOException ex) {
         /**
-         * according to https://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html,
-         * we should clean up the connection by reading the response body so that the connection
-         * could be reused.
+         * according to
+         * https://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html, we should
+         * clean up the connection by reading the response body so that the connection could be
+         * reused.
          */
         InputStream errorStream = conn.getErrorStream();
 
@@ -112,7 +113,7 @@ public class HttpUtil {
           try {
             CharStreams.toString(esr);
           } catch (IOException ioe) {
-            //ignore
+            // ignore
           }
         }
 

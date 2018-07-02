@@ -14,9 +14,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * normal property file resolver.
- * update comment and blank item implement by create new item and delete old item.
- * update normal key/value item implement by update.
+ * normal property file resolver. update comment and blank item implement by create new item and
+ * delete old item. update normal key/value item implement by update.
  */
 @Component("propertyResolver")
 public class PropertyResolver implements ConfigTextResolver {
@@ -30,7 +29,7 @@ public class PropertyResolver implements ConfigTextResolver {
     Map<Integer, ItemDTO> oldLineNumMapItem = BeanUtils.mapByKey("lineNum", baseItems);
     Map<String, ItemDTO> oldKeyMapItem = BeanUtils.mapByKey("key", baseItems);
 
-    //remove comment and blank item map.
+    // remove comment and blank item map.
     oldKeyMapItem.remove("");
 
     String[] newItems = configText.split(ITEM_SEPARATOR);
@@ -40,24 +39,25 @@ public class PropertyResolver implements ConfigTextResolver {
     }
 
     ItemChangeSets changeSets = new ItemChangeSets();
-    Map<Integer, String> newLineNumMapItem = new HashMap<Integer, String>();//use for delete blank and comment item
+    Map<Integer, String> newLineNumMapItem = new HashMap<Integer, String>();// use for delete blank
+                                                                            // and comment item
     int lineCounter = 1;
     for (String newItem : newItems) {
       newItem = newItem.trim();
       newLineNumMapItem.put(lineCounter, newItem);
       ItemDTO oldItemByLine = oldLineNumMapItem.get(lineCounter);
 
-      //comment item
+      // comment item
       if (isCommentItem(newItem)) {
 
         handleCommentLine(namespaceId, oldItemByLine, newItem, lineCounter, changeSets);
 
-        //blank item
+        // blank item
       } else if (isBlankItem(newItem)) {
 
         handleBlankLine(namespaceId, oldItemByLine, lineCounter, changeSets);
 
-        //normal item
+        // normal item
       } else {
         handleNormalLine(namespaceId, oldKeyMapItem, newItem, lineCounter, changeSets);
       }
@@ -103,22 +103,24 @@ public class PropertyResolver implements ConfigTextResolver {
     return kv;
   }
 
-  private void handleCommentLine(Long namespaceId, ItemDTO oldItemByLine, String newItem, int lineCounter, ItemChangeSets changeSets) {
+  private void handleCommentLine(Long namespaceId, ItemDTO oldItemByLine, String newItem,
+      int lineCounter, ItemChangeSets changeSets) {
     String oldComment = oldItemByLine == null ? "" : oldItemByLine.getComment();
-    //create comment. implement update comment by delete old comment and create new comment
+    // create comment. implement update comment by delete old comment and create new comment
     if (!(isCommentItem(oldItemByLine) && newItem.equals(oldComment))) {
       changeSets.addCreateItem(buildCommentItem(0l, namespaceId, newItem, lineCounter));
     }
   }
 
-  private void handleBlankLine(Long namespaceId, ItemDTO oldItem, int lineCounter, ItemChangeSets changeSets) {
+  private void handleBlankLine(Long namespaceId, ItemDTO oldItem, int lineCounter,
+      ItemChangeSets changeSets) {
     if (!isBlankItem(oldItem)) {
       changeSets.addCreateItem(buildBlankItem(0l, namespaceId, lineCounter));
     }
   }
 
-  private void handleNormalLine(Long namespaceId, Map<String, ItemDTO> keyMapOldItem, String newItem,
-                                int lineCounter, ItemChangeSets changeSets) {
+  private void handleNormalLine(Long namespaceId, Map<String, ItemDTO> keyMapOldItem,
+      String newItem, int lineCounter, ItemChangeSets changeSets) {
 
     String[] kv = parseKeyValueFromItem(newItem);
 
@@ -127,16 +129,16 @@ public class PropertyResolver implements ConfigTextResolver {
     }
 
     String newKey = kv[0];
-    String newValue = kv[1].replace("\\n", "\n"); //handle user input \n
+    String newValue = kv[1].replace("\\n", "\n"); // handle user input \n
 
     ItemDTO oldItem = keyMapOldItem.get(newKey);
 
-    if (oldItem == null) {//new item
+    if (oldItem == null) {// new item
       changeSets.addCreateItem(buildNormalItem(0l, namespaceId, newKey, newValue, "", lineCounter));
-    } else if (!newValue.equals(oldItem.getValue()) || lineCounter != oldItem.getLineNum()) {//update item
-      changeSets.addUpdateItem(
-          buildNormalItem(oldItem.getId(), namespaceId, newKey, newValue, oldItem.getComment(),
-              lineCounter));
+    } else if (!newValue.equals(oldItem.getValue()) || lineCounter != oldItem.getLineNum()) {// update
+                                                                                             // item
+      changeSets.addUpdateItem(buildNormalItem(oldItem.getId(), namespaceId, newKey, newValue,
+          oldItem.getComment(), lineCounter));
     }
     keyMapOldItem.remove(newKey);
   }
@@ -159,23 +161,22 @@ public class PropertyResolver implements ConfigTextResolver {
   }
 
   private void deleteNormalKVItem(Map<String, ItemDTO> baseKeyMapItem, ItemChangeSets changeSets) {
-    //surplus item is to be deleted
+    // surplus item is to be deleted
     for (Map.Entry<String, ItemDTO> entry : baseKeyMapItem.entrySet()) {
       changeSets.addDeleteItem(entry.getValue());
     }
   }
 
   private void deleteCommentAndBlankItem(Map<Integer, ItemDTO> oldLineNumMapItem,
-                                         Map<Integer, String> newLineNumMapItem,
-                                         ItemChangeSets changeSets) {
+      Map<Integer, String> newLineNumMapItem, ItemChangeSets changeSets) {
 
     for (Map.Entry<Integer, ItemDTO> entry : oldLineNumMapItem.entrySet()) {
       int lineNum = entry.getKey();
       ItemDTO oldItem = entry.getValue();
       String newItem = newLineNumMapItem.get(lineNum);
 
-      //1. old is blank by now is not
-      //2.old is comment by now is not exist or modified
+      // 1. old is blank by now is not
+      // 2.old is comment by now is not exist or modified
       if ((isBlankItem(oldItem) && !isBlankItem(newItem))
           || isCommentItem(oldItem) && (newItem == null || !newItem.equals(oldItem.getComment()))) {
         changeSets.addDeleteItem(oldItem);
@@ -191,7 +192,8 @@ public class PropertyResolver implements ConfigTextResolver {
     return buildNormalItem(id, namespaceId, "", "", "", lineNum);
   }
 
-  private ItemDTO buildNormalItem(Long id, Long namespaceId, String key, String value, String comment, int lineNum) {
+  private ItemDTO buildNormalItem(Long id, Long namespaceId, String key, String value,
+      String comment, int lineNum) {
     ItemDTO item = new ItemDTO(key, value, comment, lineNum);
     item.setId(id);
     item.setNamespaceId(namespaceId);

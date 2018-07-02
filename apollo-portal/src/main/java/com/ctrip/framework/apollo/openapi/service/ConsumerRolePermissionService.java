@@ -43,9 +43,8 @@ public class ConsumerRolePermissionService {
       return false;
     }
 
-    Set<Long> roleIds =
-        FluentIterable.from(consumerRoles).transform(consumerRole -> consumerRole.getRoleId())
-            .toSet();
+    Set<Long> roleIds = FluentIterable.from(consumerRoles)
+        .transform(consumerRole -> consumerRole.getRoleId()).toSet();
     List<RolePermission> rolePermissions = rolePermissionRepository.findByRoleIdIn(roleIds);
     if (CollectionUtils.isEmpty(rolePermissions)) {
       return false;

@@ -39,7 +39,6 @@ public class DefaultUserService implements UserService {
     defaultUser.setUserId("apollo");
     defaultUser.setName("apollo");
     defaultUser.setEmail("apollo@acme.com");
-
     return defaultUser;
   }
 }

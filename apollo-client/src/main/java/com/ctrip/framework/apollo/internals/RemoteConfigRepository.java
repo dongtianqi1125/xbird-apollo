@@ -84,8 +84,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     m_remoteMessages = new AtomicReference<>();
     m_loadConfigRateLimiter = RateLimiter.create(m_configUtil.getLoadConfigQPS());
     m_configNeedForceRefresh = new AtomicBoolean(true);
-    m_loadConfigFailSchedulePolicy = new ExponentialSchedulePolicy(m_configUtil.getOnErrorRetryInterval(),
-        m_configUtil.getOnErrorRetryInterval() * 8);
+    m_loadConfigFailSchedulePolicy = new ExponentialSchedulePolicy(
+        m_configUtil.getOnErrorRetryInterval(), m_configUtil.getOnErrorRetryInterval() * 8);
     gson = new Gson();
     this.trySync();
     this.schedulePeriodicRefresh();
@@ -102,22 +102,21 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
   @Override
   public void setUpstreamRepository(ConfigRepository upstreamConfigRepository) {
-    //remote config doesn't need upstream
+    // remote config doesn't need upstream
   }
 
   private void schedulePeriodicRefresh() {
     logger.debug("Schedule periodic refresh with interval: {} {}",
         m_configUtil.getRefreshInterval(), m_configUtil.getRefreshIntervalTimeUnit());
-    m_executorService.scheduleAtFixedRate(
-        new Runnable() {
-          @Override
-          public void run() {
-            Tracer.logEvent("Apollo.ConfigService", String.format("periodicRefresh: %s", m_namespace));
-            logger.debug("refresh config for namespace: {}", m_namespace);
-            trySync();
-            Tracer.logEvent("Apollo.Client.Version", Apollo.VERSION);
-          }
-        }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
+    m_executorService.scheduleAtFixedRate(new Runnable() {
+      @Override
+      public void run() {
+        Tracer.logEvent("Apollo.ConfigService", String.format("periodicRefresh: %s", m_namespace));
+        logger.debug("refresh config for namespace: {}", m_namespace);
+        trySync();
+        Tracer.logEvent("Apollo.Client.Version", Apollo.VERSION);
+      }
+    }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
         m_configUtil.getRefreshIntervalTimeUnit());
   }
 
@@ -129,7 +128,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       ApolloConfig previous = m_configCache.get();
       ApolloConfig current = loadApolloConfig();
 
-      //reference equals means HTTP 304
+      // reference equals means HTTP 304
       if (previous != current) {
         logger.debug("Remote Config refreshed!");
         m_configCache.set(current);
@@ -158,11 +157,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
   private ApolloConfig loadApolloConfig() {
     if (!m_loadConfigRateLimiter.tryAcquire(5, TimeUnit.SECONDS)) {
-      //wait at most 5 seconds
+      // wait at most 5 seconds
       try {
         TimeUnit.SECONDS.sleep(5);
-      } catch (InterruptedException e) {
-      }
+      } catch (InterruptedException e) {}
     }
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
@@ -177,7 +175,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     for (int i = 0; i < maxRetries; i++) {
       List<ServiceDTO> randomConfigServices = Lists.newLinkedList(configServices);
       Collections.shuffle(randomConfigServices);
-      //Access the server which notifies the client first
+      // Access the server which notifies the client first
       if (m_longPollServiceDto.get() != null) {
         randomConfigServices.add(0, m_longPollServiceDto.getAndSet(null));
       }
@@ -186,17 +184,18 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         if (onErrorSleepTime > 0) {
           logger.warn(
               "Load config failed, will retry in {} {}. appId: {}, cluster: {}, namespaces: {}",
-              onErrorSleepTime, m_configUtil.getOnErrorRetryIntervalTimeUnit(), appId, cluster, m_namespace);
+              onErrorSleepTime, m_configUtil.getOnErrorRetryIntervalTimeUnit(), appId, cluster,
+              m_namespace);
 
           try {
             m_configUtil.getOnErrorRetryIntervalTimeUnit().sleep(onErrorSleepTime);
           } catch (InterruptedException e) {
-            //ignore
+            // ignore
           }
         }
 
         url = assembleQueryConfigUrl(configService.getHomepageUrl(), appId, cluster, m_namespace,
-                dataCenter, m_remoteMessages.get(), m_configCache.get());
+            dataCenter, m_remoteMessages.get(), m_configCache.get());
 
         logger.debug("Loading config from {}", url);
         HttpRequest request = new HttpRequest(url);
@@ -224,16 +223,16 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
           return result;
         } catch (ApolloConfigStatusCodeException ex) {
           ApolloConfigStatusCodeException statusCodeException = ex;
-          //config not found
+          // config not found
           if (ex.getStatusCode() == 404) {
             String message = String.format(
-                "Could not find config for namespace - appId: %s, cluster: %s, namespace: %s, " +
-                    "please check whether the configs are released in Apollo!",
+                "Could not find config for namespace - appId: %s, cluster: %s, namespace: %s, "
+                    + "please check whether the configs are released in Apollo!",
                 appId, cluster, m_namespace);
-            statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(),
-                message);
+            statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(), message);
           }
-          Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException));
+          Tracer.logEvent("ApolloConfigException",
+              ExceptionUtil.getDetailMessage(statusCodeException));
           transaction.setStatus(statusCodeException);
           exception = statusCodeException;
         } catch (Throwable ex) {
@@ -245,24 +244,24 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         }
 
         // if force refresh, do normal sleep, if normal config load, do exponential sleep
-        onErrorSleepTime = m_configNeedForceRefresh.get() ? m_configUtil.getOnErrorRetryInterval() :
-            m_loadConfigFailSchedulePolicy.fail();
+        onErrorSleepTime = m_configNeedForceRefresh.get()
+            ? m_configUtil.getOnErrorRetryInterval()
+            : m_loadConfigFailSchedulePolicy.fail();
       }
 
     }
-    String message = String.format(
-        "Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s, url: %s",
-        appId, cluster, m_namespace, url);
+    String message =
+        String.format("Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s, url: %s",
+            appId, cluster, m_namespace, url);
     throw new ApolloConfigException(message, exception);
   }
 
   String assembleQueryConfigUrl(String uri, String appId, String cluster, String namespace,
-                                String dataCenter, ApolloNotificationMessages remoteMessages, ApolloConfig previousConfig) {
+      String dataCenter, ApolloNotificationMessages remoteMessages, ApolloConfig previousConfig) {
 
     String path = "configs/%s/%s/%s";
-    List<String> pathParams =
-        Lists.newArrayList(pathEscaper.escape(appId), pathEscaper.escape(cluster),
-            pathEscaper.escape(namespace));
+    List<String> pathParams = Lists.newArrayList(pathEscaper.escape(appId),
+        pathEscaper.escape(cluster), pathEscaper.escape(namespace));
     Map<String, String> queryParams = Maps.newHashMap();
 
     if (previousConfig != null) {
@@ -297,7 +296,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     remoteConfigLongPollService.submit(m_namespace, this);
   }
 
-  public void onLongPollNotified(ServiceDTO longPollNotifiedServiceDto, ApolloNotificationMessages remoteMessages) {
+  public void onLongPollNotified(ServiceDTO longPollNotifiedServiceDto,
+      ApolloNotificationMessages remoteMessages) {
     m_longPollServiceDto.set(longPollNotifiedServiceDto);
     m_remoteMessages.set(remoteMessages);
     m_executorService.submit(new Runnable() {

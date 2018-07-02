@@ -39,7 +39,7 @@ public class AppNamespaceController {
       throw new BadRequestException("app namespaces already exist.");
     }
 
-    if (StringUtils.isEmpty(entity.getFormat())){
+    if (StringUtils.isEmpty(entity.getFormat())) {
       entity.setFormat(ConfigFileFormat.Properties.getValue());
     }
 
@@ -50,9 +50,11 @@ public class AppNamespaceController {
   }
 
   @RequestMapping(value = "/appnamespaces/{publicNamespaceName}/namespaces", method = RequestMethod.GET)
-  public List<NamespaceDTO> findPublicAppNamespaceAllNamespaces(@PathVariable String publicNamespaceName, Pageable pageable) {
+  public List<NamespaceDTO> findPublicAppNamespaceAllNamespaces(
+      @PathVariable String publicNamespaceName, Pageable pageable) {
 
-    List<Namespace> namespaces = namespaceService.findPublicAppNamespaceAllNamespaces(publicNamespaceName, pageable);
+    List<Namespace> namespaces =
+        namespaceService.findPublicAppNamespaceAllNamespaces(publicNamespaceName, pageable);
 
     return BeanUtils.batchTransform(NamespaceDTO.class, namespaces);
   }

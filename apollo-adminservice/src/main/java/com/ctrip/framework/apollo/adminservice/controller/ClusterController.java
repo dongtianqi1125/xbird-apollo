@@ -26,10 +26,11 @@ public class ClusterController {
 
   @RequestMapping(path = "/apps/{appId}/clusters", method = RequestMethod.POST)
   public ClusterDTO create(@PathVariable("appId") String appId,
-                           @RequestParam(value = "autoCreatePrivateNamespace", defaultValue = "true") boolean autoCreatePrivateNamespace,
-                           @RequestBody ClusterDTO dto) {
+      @RequestParam(value = "autoCreatePrivateNamespace", defaultValue = "true") boolean autoCreatePrivateNamespace,
+      @RequestBody ClusterDTO dto) {
     if (!InputValidator.isValidClusterNamespace(dto.getName())) {
-      throw new BadRequestException(String.format("Cluster格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+      throw new BadRequestException(
+          String.format("Cluster格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
     }
 
     Cluster entity = BeanUtils.transfrom(Cluster.class, dto);
@@ -50,7 +51,7 @@ public class ClusterController {
 
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName:.+}", method = RequestMethod.DELETE)
   public void delete(@PathVariable("appId") String appId,
-                     @PathVariable("clusterName") String clusterName, @RequestParam String operator) {
+      @PathVariable("clusterName") String clusterName, @RequestParam String operator) {
     Cluster entity = clusterService.findOne(appId, clusterName);
     if (entity == null) {
       throw new NotFoundException("cluster not found for clusterName " + clusterName);
@@ -66,7 +67,7 @@ public class ClusterController {
 
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName:.+}", method = RequestMethod.GET)
   public ClusterDTO get(@PathVariable("appId") String appId,
-                        @PathVariable("clusterName") String clusterName) {
+      @PathVariable("clusterName") String clusterName) {
     Cluster cluster = clusterService.findOne(appId, clusterName);
     if (cluster == null) {
       throw new NotFoundException("cluster not found for name " + clusterName);
@@ -76,7 +77,7 @@ public class ClusterController {
 
   @RequestMapping(value = "/apps/{appId}/cluster/{clusterName}/unique", method = RequestMethod.GET)
   public boolean isAppIdUnique(@PathVariable("appId") String appId,
-                               @PathVariable("clusterName") String clusterName) {
+      @PathVariable("clusterName") String clusterName) {
     return clusterService.isClusterNameUnique(appId, clusterName);
   }
 }

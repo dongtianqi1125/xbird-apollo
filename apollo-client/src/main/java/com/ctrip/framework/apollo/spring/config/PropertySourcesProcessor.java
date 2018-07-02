@@ -27,21 +27,27 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * Apollo Property Sources processor for Spring Annotation Based Application. <br /> <br />
+ * Apollo Property Sources processor for Spring Annotation Based Application. <br />
+ * <br />
  *
  * The reason why PropertySourcesProcessor implements {@link BeanFactoryPostProcessor} instead of
- * {@link org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor} is that lower versions of
- * Spring (e.g. 3.1.1) doesn't support registering BeanDefinitionRegistryPostProcessor in ImportBeanDefinitionRegistrar
- * - {@link com.ctrip.framework.apollo.spring.annotation.ApolloConfigRegistrar}
+ * {@link org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor} is that
+ * lower versions of Spring (e.g. 3.1.1) doesn't support registering
+ * BeanDefinitionRegistryPostProcessor in ImportBeanDefinitionRegistrar -
+ * {@link com.ctrip.framework.apollo.spring.annotation.ApolloConfigRegistrar}
  *
  * @author Jason Song(song_s@ctrip.com)
  */
-public class PropertySourcesProcessor implements BeanFactoryPostProcessor, EnvironmentAware, PriorityOrdered {
+public class PropertySourcesProcessor
+    implements
+      BeanFactoryPostProcessor,
+      EnvironmentAware,
+      PriorityOrdered {
   private static final Multimap<Integer, String> NAMESPACE_NAMES = LinkedHashMultimap.create();
   private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
 
-  private final ConfigPropertySourceFactory configPropertySourceFactory = SpringInjector
-      .getInstance(ConfigPropertySourceFactory.class);
+  private final ConfigPropertySourceFactory configPropertySourceFactory =
+      SpringInjector.getInstance(ConfigPropertySourceFactory.class);
   private final ConfigUtil configUtil = ApolloInjector.getInstance(ConfigUtil.class);
   private ConfigurableEnvironment environment;
 
@@ -50,7 +56,8 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
   }
 
   @Override
-  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
+      throws BeansException {
     if (INITIALIZED.compareAndSet(false, true)) {
       initializePropertySources();
 
@@ -59,13 +66,15 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
   }
 
   private void initializePropertySources() {
-    if (environment.getPropertySources().contains(PropertySourcesConstants.APOLLO_PROPERTY_SOURCE_NAME)) {
-      //already initialized
+    if (environment.getPropertySources()
+        .contains(PropertySourcesConstants.APOLLO_PROPERTY_SOURCE_NAME)) {
+      // already initialized
       return;
     }
-    CompositePropertySource composite = new CompositePropertySource(PropertySourcesConstants.APOLLO_PROPERTY_SOURCE_NAME);
+    CompositePropertySource composite =
+        new CompositePropertySource(PropertySourcesConstants.APOLLO_PROPERTY_SOURCE_NAME);
 
-    //sort by order asc
+    // sort by order asc
     ImmutableSortedSet<Integer> orders = ImmutableSortedSet.copyOf(NAMESPACE_NAMES.keySet());
     Iterator<Integer> iterator = orders.iterator();
 
@@ -74,7 +83,8 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
       for (String namespace : NAMESPACE_NAMES.get(order)) {
         Config config = ConfigService.getConfig(namespace);
 
-        composite.addPropertySource(configPropertySourceFactory.getConfigPropertySource(namespace, config));
+        composite.addPropertySource(
+            configPropertySourceFactory.getConfigPropertySource(namespace, config));
       }
     }
 
@@ -93,10 +103,11 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
       return;
     }
 
-    AutoUpdateConfigChangeListener autoUpdateConfigChangeListener = new AutoUpdateConfigChangeListener(
-        environment, beanFactory);
+    AutoUpdateConfigChangeListener autoUpdateConfigChangeListener =
+        new AutoUpdateConfigChangeListener(environment, beanFactory);
 
-    List<ConfigPropertySource> configPropertySources = configPropertySourceFactory.getAllConfigPropertySources();
+    List<ConfigPropertySource> configPropertySources =
+        configPropertySourceFactory.getAllConfigPropertySources();
     for (ConfigPropertySource configPropertySource : configPropertySources) {
       configPropertySource.addChangeListener(autoUpdateConfigChangeListener);
     }
@@ -104,13 +115,13 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
 
   @Override
   public void setEnvironment(Environment environment) {
-    //it is safe enough to cast as all known environment is derived from ConfigurableEnvironment
+    // it is safe enough to cast as all known environment is derived from ConfigurableEnvironment
     this.environment = (ConfigurableEnvironment) environment;
   }
 
   @Override
   public int getOrder() {
-    //make it as early as possible
+    // make it as early as possible
     return Ordered.HIGHEST_PRECEDENCE;
   }
 }

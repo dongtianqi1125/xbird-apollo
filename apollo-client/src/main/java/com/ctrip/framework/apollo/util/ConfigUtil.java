@@ -20,19 +20,19 @@ public class ConfigUtil {
   private static final Logger logger = LoggerFactory.getLogger(ConfigUtil.class);
   private int refreshInterval = 5;
   private TimeUnit refreshIntervalTimeUnit = TimeUnit.MINUTES;
-  private int connectTimeout = 1000; //1 second
-  private int readTimeout = 5000; //5 seconds
+  private int connectTimeout = 1000; // 1 second
+  private int readTimeout = 5000; // 5 seconds
   private String cluster;
-  private int loadConfigQPS = 2; //2 times per second
-  private int longPollQPS = 2; //2 times per second
-  //for on error retry
-  private long onErrorRetryInterval = 1;//1 second
-  private TimeUnit onErrorRetryIntervalTimeUnit = TimeUnit.SECONDS;//1 second
-  //for typed config cache of parser result, e.g. integer, double, long, etc.
-  private long maxConfigCacheSize = 500;//500 cache key
-  private long configCacheExpireTime = 1;//1 minute
-  private TimeUnit configCacheExpireTimeUnit = TimeUnit.MINUTES;//1 minute
-  private long longPollingInitialDelayInMills = 2000;//2 seconds
+  private int loadConfigQPS = 2; // 2 times per second
+  private int longPollQPS = 2; // 2 times per second
+  // for on error retry
+  private long onErrorRetryInterval = 1;// 1 second
+  private TimeUnit onErrorRetryIntervalTimeUnit = TimeUnit.SECONDS;// 1 second
+  // for typed config cache of parser result, e.g. integer, double, long, etc.
+  private long maxConfigCacheSize = 500;// 500 cache key
+  private long configCacheExpireTime = 1;// 1 minute
+  private TimeUnit configCacheExpireTimeUnit = TimeUnit.MINUTES;// 1 minute
+  private long longPollingInitialDelayInMills = 2000;// 2 seconds
   private boolean autoUpdateInjectedSpringProperties = true;
 
   public ConfigUtil() {
@@ -55,8 +55,9 @@ public class ConfigUtil {
     String appId = Foundation.app().getAppId();
     if (Strings.isNullOrEmpty(appId)) {
       appId = ConfigConsts.NO_APPID_PLACEHOLDER;
-      logger.warn("app.id is not set, please make sure it is set in classpath:/META-INF/app.properties, now apollo " +
-          "will only load public namespace configurations!");
+      logger.warn(
+          "app.id is not set, please make sure it is set in classpath:/META-INF/app.properties, now apollo "
+              + "will only load public namespace configurations!");
     }
     return appId;
   }
@@ -71,15 +72,15 @@ public class ConfigUtil {
   }
 
   private void initCluster() {
-    //Load data center from system property
+    // Load data center from system property
     cluster = System.getProperty(ConfigConsts.APOLLO_CLUSTER_KEY);
 
-    //Use data center as cluster
+    // Use data center as cluster
     if (Strings.isNullOrEmpty(cluster)) {
       cluster = getDataCenter();
     }
 
-    //Use default cluster
+    // Use default cluster
     if (Strings.isNullOrEmpty(cluster)) {
       cluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
     }
@@ -103,8 +104,9 @@ public class ConfigUtil {
   public Env getApolloEnv() {
     Env env = EnvUtils.transformEnv(Foundation.server().getEnvType());
     if (env == null) {
-      String path = isOSWindows() ? "C:\\opt\\settings\\server.properties" :
-          "/opt/settings/server.properties";
+      String path = isOSWindows()
+          ? "C:\\opt\\settings\\server.properties"
+          : "/opt/settings/server.properties";
       String message = String.format("env is not set, please make sure it is set in %s!", path);
       logger.error(message);
       throw new ApolloConfigException(message);
@@ -215,7 +217,7 @@ public class ConfigUtil {
       Env env = getApolloEnv();
       return env == Env.LOCAL;
     } catch (Throwable ex) {
-      //ignore
+      // ignore
     }
     return false;
   }
@@ -252,12 +254,14 @@ public class ConfigUtil {
   }
 
   private void initLongPollingInitialDelayInMills() {
-    String customizedLongPollingInitialDelay = System.getProperty("apollo.longPollingInitialDelayInMills");
+    String customizedLongPollingInitialDelay =
+        System.getProperty("apollo.longPollingInitialDelayInMills");
     if (!Strings.isNullOrEmpty(customizedLongPollingInitialDelay)) {
       try {
         longPollingInitialDelayInMills = Long.valueOf(customizedLongPollingInitialDelay);
       } catch (Throwable ex) {
-        logger.error("Config for apollo.longPollingInitialDelayInMills is invalid: {}", customizedLongPollingInitialDelay);
+        logger.error("Config for apollo.longPollingInitialDelayInMills is invalid: {}",
+            customizedLongPollingInitialDelay);
       }
     }
   }
@@ -271,7 +275,8 @@ public class ConfigUtil {
     String enableAutoUpdate = System.getProperty("apollo.autoUpdateInjectedSpringProperties");
     if (Strings.isNullOrEmpty(enableAutoUpdate)) {
       // 2. Get from app.properties
-      enableAutoUpdate = Foundation.app().getProperty("apollo.autoUpdateInjectedSpringProperties", null);
+      enableAutoUpdate =
+          Foundation.app().getProperty("apollo.autoUpdateInjectedSpringProperties", null);
     }
     if (!Strings.isNullOrEmpty(enableAutoUpdate)) {
       autoUpdateInjectedSpringProperties = Boolean.parseBoolean(enableAutoUpdate.trim());

@@ -17,10 +17,8 @@ public class PageSettingController {
   @RequestMapping(value = "/page-settings", method = RequestMethod.GET)
   public PageSetting getPageSetting() {
     PageSetting setting = new PageSetting();
-
     setting.setWikiAddress(portalConfig.wikiAddress());
     setting.setCanAppAdminCreatePrivateNamespace(portalConfig.canAppAdminCreatePrivateNamespace());
-
     return setting;
   }
 

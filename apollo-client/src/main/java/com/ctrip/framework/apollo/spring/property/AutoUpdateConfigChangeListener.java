@@ -25,7 +25,7 @@ import com.google.gson.Gson;
 /**
  * Create by zhangzheng on 2018/3/6
  */
-public class AutoUpdateConfigChangeListener implements ConfigChangeListener{
+public class AutoUpdateConfigChangeListener implements ConfigChangeListener {
   private static final Logger logger = LoggerFactory.getLogger(SpringValueProcessor.class);
 
   private final boolean typeConverterHasConvertIfNecessaryWithFieldParameter;
@@ -36,8 +36,10 @@ public class AutoUpdateConfigChangeListener implements ConfigChangeListener{
   private final SpringValueRegistry springValueRegistry;
   private final Gson gson;
 
-  public AutoUpdateConfigChangeListener(Environment environment, ConfigurableListableBeanFactory beanFactory){
-    this.typeConverterHasConvertIfNecessaryWithFieldParameter = testTypeConverterHasConvertIfNecessaryWithFieldParameter();
+  public AutoUpdateConfigChangeListener(Environment environment,
+      ConfigurableListableBeanFactory beanFactory) {
+    this.typeConverterHasConvertIfNecessaryWithFieldParameter =
+        testTypeConverterHasConvertIfNecessaryWithFieldParameter();
     this.beanFactory = beanFactory;
     this.typeConverter = this.beanFactory.getTypeConverter();
     this.environment = environment;
@@ -59,7 +61,8 @@ public class AutoUpdateConfigChangeListener implements ConfigChangeListener{
         continue;
       }
 
-      // 2. check whether the value is really changed or not (since spring property sources have hierarchies)
+      // 2. check whether the value is really changed or not (since spring property sources have
+      // hierarchies)
       if (!shouldTriggerAutoUpdate(changeEvent, key)) {
         continue;
       }
@@ -72,10 +75,9 @@ public class AutoUpdateConfigChangeListener implements ConfigChangeListener{
   }
 
   /**
-   * Check whether we should trigger the auto update or not.
-   * <br />
-   * For added or modified keys, we should trigger auto update if the current value in Spring equals to the new value.
-   * <br />
+   * Check whether we should trigger the auto update or not. <br />
+   * For added or modified keys, we should trigger auto update if the current value in Spring equals
+   * to the new value. <br />
    * For deleted keys, we will trigger auto update anyway.
    */
   private boolean shouldTriggerAutoUpdate(ConfigChangeEvent changeEvent, String changedKey) {
@@ -102,21 +104,24 @@ public class AutoUpdateConfigChangeListener implements ConfigChangeListener{
 
   /**
    * Logic transplanted from DefaultListableBeanFactory
-   * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#doResolveDependency(org.springframework.beans.factory.config.DependencyDescriptor, java.lang.String, java.util.Set, org.springframework.beans.TypeConverter)
+   * 
+   * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#doResolveDependency(org.springframework.beans.factory.config.DependencyDescriptor,
+   *      java.lang.String, java.util.Set, org.springframework.beans.TypeConverter)
    */
   private Object resolvePropertyValue(SpringValue springValue) {
     // value will never be null, as @Value and @ApolloJsonValue will not allow that
-    Object value = placeholderHelper
-        .resolvePropertyValue(beanFactory, springValue.getBeanName(), springValue.getPlaceholder());
+    Object value = placeholderHelper.resolvePropertyValue(beanFactory, springValue.getBeanName(),
+        springValue.getPlaceholder());
 
     if (springValue.isJson()) {
-      value = parseJsonValue((String)value, springValue.getGenericType());
+      value = parseJsonValue((String) value, springValue.getGenericType());
     } else {
       if (springValue.isField()) {
-        // org.springframework.beans.TypeConverter#convertIfNecessary(java.lang.Object, java.lang.Class, java.lang.reflect.Field) is available from Spring 3.2.0+
+        // org.springframework.beans.TypeConverter#convertIfNecessary(java.lang.Object,
+        // java.lang.Class, java.lang.reflect.Field) is available from Spring 3.2.0+
         if (typeConverterHasConvertIfNecessaryWithFieldParameter) {
-          value = this.typeConverter
-              .convertIfNecessary(value, springValue.getTargetType(), springValue.getField());
+          value = this.typeConverter.convertIfNecessary(value, springValue.getTargetType(),
+              springValue.getField());
         } else {
           value = this.typeConverter.convertIfNecessary(value, springValue.getTargetType());
         }

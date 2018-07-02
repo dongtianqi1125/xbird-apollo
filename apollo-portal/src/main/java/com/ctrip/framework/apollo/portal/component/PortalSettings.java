@@ -40,7 +40,7 @@ public class PortalSettings {
 
   private List<Env> allEnvs = new ArrayList<>();
 
-  //mark env up or down
+  // mark env up or down
   private Map<Env, Boolean> envStatusMark = new ConcurrentHashMap<>();
 
   @PostConstruct
@@ -52,13 +52,11 @@ public class PortalSettings {
       envStatusMark.put(env, true);
     }
 
-    ScheduledExecutorService
-        healthCheckService =
+    ScheduledExecutorService healthCheckService =
         Executors.newScheduledThreadPool(1, ApolloThreadFactory.create("EnvHealthChecker", true));
 
-    healthCheckService
-        .scheduleWithFixedDelay(new HealthCheckTask(applicationContext), 1000, HEALTH_CHECK_INTERVAL,
-                                TimeUnit.MILLISECONDS);
+    healthCheckService.scheduleWithFixedDelay(new HealthCheckTask(applicationContext), 1000,
+        HEALTH_CHECK_INTERVAL, TimeUnit.MILLISECONDS);
 
   }
 
@@ -101,22 +99,24 @@ public class PortalSettings {
       for (Env env : allEnvs) {
         try {
           if (isUp(env)) {
-            //revive
+            // revive
             if (!envStatusMark.get(env)) {
               envStatusMark.put(env, true);
               healthCheckFailedCounter.put(env, 0);
               logger.info("Env revived because env health check success. env: {}", env);
             }
           } else {
-            logger.error("Env health check failed, maybe because of admin server down. env: {}, meta server address: {}", env,
-                        MetaDomainConsts.getDomain(env));
+            logger.error(
+                "Env health check failed, maybe because of admin server down. env: {}, meta server address: {}",
+                env, MetaDomainConsts.getDomain(env));
             handleEnvDown(env);
           }
 
         } catch (Exception e) {
-          logger.error("Env health check failed, maybe because of meta server down "
-                       + "or configure wrong meta server address. env: {}, meta server address: {}", env,
-                       MetaDomainConsts.getDomain(env), e);
+          logger.error(
+              "Env health check failed, maybe because of meta server down "
+                  + "or configure wrong meta server address. env: {}, meta server address: {}",
+              env, MetaDomainConsts.getDomain(env), e);
           handleEnvDown(env);
         }
       }
@@ -133,14 +133,15 @@ public class PortalSettings {
       healthCheckFailedCounter.put(env, ++failedTimes);
 
       if (!envStatusMark.get(env)) {
-        logger.error("Env is down. env: {}, failed times: {}, meta server address: {}", env, failedTimes,
-                     MetaDomainConsts.getDomain(env));
+        logger.error("Env is down. env: {}, failed times: {}, meta server address: {}", env,
+            failedTimes, MetaDomainConsts.getDomain(env));
       } else {
         if (failedTimes >= ENV_DOWN_THRESHOLD) {
           envStatusMark.put(env, false);
-          logger.error("Env is down because health check failed for {} times, "
-                       + "which equals to down threshold. env: {}, meta server address: {}", ENV_DOWN_THRESHOLD, env,
-                       MetaDomainConsts.getDomain(env));
+          logger.error(
+              "Env is down because health check failed for {} times, "
+                  + "which equals to down threshold. env: {}, meta server address: {}",
+              ENV_DOWN_THRESHOLD, env, MetaDomainConsts.getDomain(env));
         } else {
           logger.error(
               "Env health check failed for {} times which less than down threshold. down threshold:{}, env: {}, meta server address: {}",

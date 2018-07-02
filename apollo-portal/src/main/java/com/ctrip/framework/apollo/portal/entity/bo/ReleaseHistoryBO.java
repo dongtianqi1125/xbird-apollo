@@ -38,7 +38,6 @@ public class ReleaseHistoryBO {
 
   private Map<String, Object> operationContext;
 
-
   public long getId() {
     return id;
   }
@@ -155,8 +154,7 @@ public class ReleaseHistoryBO {
     return configuration;
   }
 
-  public void setConfiguration(
-      List<EntityPair<String>> configuration) {
+  public void setConfiguration(List<EntityPair<String>> configuration) {
     this.configuration = configuration;
   }
 }

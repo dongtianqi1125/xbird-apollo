@@ -22,10 +22,8 @@ public class ItemSetController {
   @PreAcquireNamespaceLock
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/itemset", method = RequestMethod.POST)
   public ResponseEntity<Void> create(@PathVariable String appId, @PathVariable String clusterName,
-                                     @PathVariable String namespaceName, @RequestBody ItemChangeSets changeSet) {
-
+      @PathVariable String namespaceName, @RequestBody ItemChangeSets changeSet) {
     itemSetService.updateSet(appId, clusterName, namespaceName, changeSet);
-
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 

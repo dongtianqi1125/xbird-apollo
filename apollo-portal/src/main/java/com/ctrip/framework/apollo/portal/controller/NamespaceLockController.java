@@ -20,18 +20,17 @@ public class NamespaceLockController {
   @Deprecated
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/lock", method = RequestMethod.GET)
   public NamespaceLockDTO getNamespaceLock(@PathVariable String appId, @PathVariable String env,
-                                           @PathVariable String clusterName, @PathVariable String namespaceName) {
-
-    return namespaceLockService.getNamespaceLock(appId, Env.valueOf(env), clusterName, namespaceName);
+      @PathVariable String clusterName, @PathVariable String namespaceName) {
+    return namespaceLockService.getNamespaceLock(appId, Env.valueOf(env), clusterName,
+        namespaceName);
   }
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/lock-info", method = RequestMethod.GET)
   public LockInfo getNamespaceLockInfo(@PathVariable String appId, @PathVariable String env,
-                                       @PathVariable String clusterName, @PathVariable String namespaceName) {
+      @PathVariable String clusterName, @PathVariable String namespaceName) {
 
-    return namespaceLockService.getNamespaceLockInfo(appId, Env.fromString(env), clusterName, namespaceName);
-
+    return namespaceLockService.getNamespaceLockInfo(appId, Env.fromString(env), clusterName,
+        namespaceName);
   }
-
 
 }

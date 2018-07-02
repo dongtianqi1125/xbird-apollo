@@ -13,7 +13,6 @@ public class NamespaceBO {
   private String parentAppId;
   private String comment;
 
-
   public NamespaceDTO getBaseInfo() {
     return baseInfo;
   }

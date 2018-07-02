@@ -10,8 +10,8 @@ import com.ctrip.framework.apollo.openapi.PortalOpenApiConfig;
 
 @EnableAspectJAutoProxy
 @EnableTransactionManagement
-@SpringBootApplication(scanBasePackageClasses = {ApolloCommonConfig.class,
-    PortalApplication.class, PortalOpenApiConfig.class})
+@SpringBootApplication(scanBasePackageClasses = {ApolloCommonConfig.class, PortalApplication.class,
+    PortalOpenApiConfig.class})
 public class PortalApplication {
 
   public static void main(String[] args) throws Exception {

@@ -14,7 +14,8 @@ import com.google.common.base.Strings;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class NamespaceHandler extends NamespaceHandlerSupport {
-  private static final Splitter NAMESPACE_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
+  private static final Splitter NAMESPACE_SPLITTER =
+      Splitter.on(",").omitEmptyStrings().trimResults();
 
   @Override
   public void init() {
@@ -35,7 +36,7 @@ public class NamespaceHandler extends NamespaceHandlerSupport {
     @Override
     protected void doParse(Element element, BeanDefinitionBuilder builder) {
       String namespaces = element.getAttribute("namespaces");
-      //default to application
+      // default to application
       if (Strings.isNullOrEmpty(namespaces)) {
         namespaces = ConfigConsts.NAMESPACE_APPLICATION;
       }

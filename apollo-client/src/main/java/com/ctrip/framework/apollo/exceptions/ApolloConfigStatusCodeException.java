@@ -3,7 +3,7 @@ package com.ctrip.framework.apollo.exceptions;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class ApolloConfigStatusCodeException extends RuntimeException{
+public class ApolloConfigStatusCodeException extends RuntimeException {
   private static final long serialVersionUID = 1L;
   private final int statusCode;
 

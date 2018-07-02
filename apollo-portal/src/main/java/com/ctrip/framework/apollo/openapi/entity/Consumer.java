@@ -83,10 +83,8 @@ public class Consumer extends BaseEntity {
 
   @Override
   public String toString() {
-    return toStringHelper().add("name", name).add("appId", appId)
-        .add("orgId", orgId)
-        .add("orgName", orgName)
-        .add("ownerName", ownerName)
-        .add("ownerEmail", ownerEmail).toString();
+    return toStringHelper().add("name", name).add("appId", appId).add("orgId", orgId)
+        .add("orgName", orgName).add("ownerName", ownerName).add("ownerEmail", ownerEmail)
+        .toString();
   }
 }

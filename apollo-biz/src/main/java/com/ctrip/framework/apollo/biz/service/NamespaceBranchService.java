@@ -186,7 +186,6 @@ public class NamespaceBranchService {
     return childCluster;
   }
 
-
   private Namespace createNamespaceBranch(String appId, String clusterName, String namespaceName,
       String operator) {
     Namespace childNamespace = new Namespace();

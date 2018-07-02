@@ -45,8 +45,7 @@ public class ConfigServiceLocator {
   public ConfigServiceLocator() {
     List<ServiceDTO> initial = Lists.newArrayList();
     m_configServices = new AtomicReference<>(initial);
-    m_responseType = new TypeToken<List<ServiceDTO>>() {
-    }.getType();
+    m_responseType = new TypeToken<List<ServiceDTO>>() {}.getType();
     m_httpUtil = ApolloInjector.getInstance(HttpUtil.class);
     m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
     this.m_executorService = Executors.newScheduledThreadPool(1,
@@ -73,21 +72,20 @@ public class ConfigServiceLocator {
       updateConfigServices();
       return true;
     } catch (Throwable ex) {
-      //ignore
+      // ignore
     }
     return false;
   }
 
   private void schedulePeriodicRefresh() {
-    this.m_executorService.scheduleAtFixedRate(
-        new Runnable() {
-          @Override
-          public void run() {
-            logger.debug("refresh config services");
-            Tracer.logEvent("Apollo.MetaService", "periodicRefresh");
-            tryUpdateConfigServices();
-          }
-        }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
+    this.m_executorService.scheduleAtFixedRate(new Runnable() {
+      @Override
+      public void run() {
+        logger.debug("refresh config services");
+        Tracer.logEvent("Apollo.MetaService", "periodicRefresh");
+        tryUpdateConfigServices();
+      }
+    }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
         m_configUtil.getRefreshIntervalTimeUnit());
   }
 
@@ -121,14 +119,15 @@ public class ConfigServiceLocator {
       }
 
       try {
-        m_configUtil.getOnErrorRetryIntervalTimeUnit().sleep(m_configUtil.getOnErrorRetryInterval());
+        m_configUtil.getOnErrorRetryIntervalTimeUnit()
+            .sleep(m_configUtil.getOnErrorRetryInterval());
       } catch (InterruptedException ex) {
-        //ignore
+        // ignore
       }
     }
 
-    throw new ApolloConfigException(
-        String.format("Get config services failed from %s", url), exception);
+    throw new ApolloConfigException(String.format("Get config services failed from %s", url),
+        exception);
   }
 
   private String assembleMetaServiceUrl() {

@@ -15,8 +15,7 @@ import com.ctrip.framework.apollo.util.ExceptionUtil;
 public class PropertiesConfigFile extends AbstractConfigFile {
   protected AtomicReference<String> m_contentCache;
 
-  public PropertiesConfigFile(String namespace,
-                              ConfigRepository configRepository) {
+  public PropertiesConfigFile(String namespace, ConfigRepository configRepository) {
     super(namespace, configRepository);
     m_contentCache = new AtomicReference<>();
   }
@@ -43,10 +42,9 @@ public class PropertiesConfigFile extends AbstractConfigFile {
     try {
       return PropertiesUtil.toString(m_configProperties.get());
     } catch (Throwable ex) {
-      ApolloConfigException exception =
-          new ApolloConfigException(String
-              .format("Parse properties file content failed for namespace: %s, cause: %s",
-                  m_namespace, ExceptionUtil.getDetailMessage(ex)));
+      ApolloConfigException exception = new ApolloConfigException(
+          String.format("Parse properties file content failed for namespace: %s, cause: %s",
+              m_namespace, ExceptionUtil.getDetailMessage(ex)));
       Tracer.logError(exception);
       throw exception;
     }

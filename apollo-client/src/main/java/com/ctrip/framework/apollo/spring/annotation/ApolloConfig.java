@@ -11,7 +11,9 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 /**
  * Use this annotation to inject Apollo Config Instance.
  *
- * <p>Usage example:</p>
+ * <p>
+ * Usage example:
+ * </p>
  * <pre class="code">
  * //Inject the config for "someNamespace"
  * &#064;ApolloConfig("someNamespace")

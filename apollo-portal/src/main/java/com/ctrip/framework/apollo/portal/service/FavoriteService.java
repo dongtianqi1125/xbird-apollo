@@ -28,7 +28,6 @@ public class FavoriteService {
   @Autowired
   private UserService userService;
 
-
   public Favorite addFavorite(Favorite favorite) {
     UserInfo user = userService.findByUserId(favorite.getUserId());
     if (user == null) {
@@ -36,13 +35,14 @@ public class FavoriteService {
     }
 
     UserInfo loginUser = userInfoHolder.getUser();
-    //user can only add himself favorite app
+    // user can only add himself favorite app
     if (!loginUser.equals(user)) {
-      throw new BadRequestException("add favorite fail. "
-                                    + "because favorite's user is not current login user.");
+      throw new BadRequestException(
+          "add favorite fail. " + "because favorite's user is not current login user.");
     }
 
-    Favorite checkedFavorite = favoriteRepository.findByUserIdAndAppId(loginUser.getUserId(), favorite.getAppId());
+    Favorite checkedFavorite =
+        favoriteRepository.findByUserIdAndAppId(loginUser.getUserId(), favorite.getAppId());
     if (checkedFavorite != null) {
       return checkedFavorite;
     }
@@ -54,7 +54,6 @@ public class FavoriteService {
     return favoriteRepository.save(favorite);
   }
 
-
   public List<Favorite> search(String userId, String appId, Pageable page) {
     boolean isUserIdEmpty = StringUtils.isEmpty(userId);
     boolean isAppIdEmpty = StringUtils.isEmpty(appId);
@@ -63,17 +62,18 @@ public class FavoriteService {
       throw new BadRequestException("user id and app id can't be empty at the same time");
     }
 
-    //search by userId
+    // search by userId
     if (isAppIdEmpty && !isUserIdEmpty) {
-      return favoriteRepository.findByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(userId, page);
+      return favoriteRepository.findByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(userId,
+          page);
     }
 
-    //search by appId
+    // search by appId
     if (!isAppIdEmpty && isUserIdEmpty) {
       return favoriteRepository.findByAppIdOrderByPositionAscDataChangeCreatedTimeAsc(appId, page);
     }
 
-    //search by userId and appId
+    // search by userId and appId
     return Arrays.asList(favoriteRepository.findByUserIdAndAppId(userId, appId));
   }
 
@@ -92,11 +92,10 @@ public class FavoriteService {
     checkUserOperatePermission(favorite);
 
     String userId = favorite.getUserId();
-    Favorite firstFavorite = favoriteRepository.findFirstByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(userId);
+    Favorite firstFavorite =
+        favoriteRepository.findFirstByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(userId);
     long minPosition = firstFavorite.getPosition();
-
     favorite.setPosition(minPosition - 1);
-
     favoriteRepository.save(favorite);
   }
 

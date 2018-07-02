@@ -7,5 +7,4 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public interface ConsumerAuditRepository extends PagingAndSortingRepository<ConsumerAudit, Long> {
-}
+public interface ConsumerAuditRepository extends PagingAndSortingRepository<ConsumerAudit, Long> {}

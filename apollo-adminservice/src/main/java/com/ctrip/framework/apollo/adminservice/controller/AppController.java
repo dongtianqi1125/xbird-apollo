@@ -34,7 +34,8 @@ public class AppController {
   @RequestMapping(path = "/apps", method = RequestMethod.POST)
   public AppDTO create(@RequestBody AppDTO dto) {
     if (!InputValidator.isValidClusterNamespace(dto.getAppId())) {
-      throw new BadRequestException(String.format("AppId格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+      throw new BadRequestException(
+          String.format("AppId格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
     }
     App entity = BeanUtils.transfrom(App.class, dto);
     App managedEntity = appService.findOne(entity.getAppId());
@@ -68,7 +69,7 @@ public class AppController {
 
   @RequestMapping(value = "/apps", method = RequestMethod.GET)
   public List<AppDTO> find(@RequestParam(value = "name", required = false) String name,
-                           Pageable pageable) {
+      Pageable pageable) {
     List<App> app = null;
     if (StringUtils.isBlank(name)) {
       app = appService.findAll(pageable);

@@ -25,7 +25,6 @@ public class PortalDBPropertySource extends RefreshablePropertySource {
   @Autowired
   private ServerConfigRepository serverConfigRepository;
 
-
   public PortalDBPropertySource(String name, Map<String, Object> source) {
     super(name, source);
   }
@@ -38,15 +37,15 @@ public class PortalDBPropertySource extends RefreshablePropertySource {
   protected void refresh() {
     Iterable<ServerConfig> dbConfigs = serverConfigRepository.findAll();
 
-    for (ServerConfig config: dbConfigs) {
+    for (ServerConfig config : dbConfigs) {
       String key = config.getKey();
       Object value = config.getValue();
 
       if (this.source.isEmpty()) {
         logger.info("Load config from DB : {} = {}", key, value);
       } else if (!Objects.equals(this.source.get(key), value)) {
-        logger.info("Load config from DB : {} = {}. Old value = {}", key,
-                    value, this.source.get(key));
+        logger.info("Load config from DB : {} = {}. Old value = {}", key, value,
+            this.source.get(key));
       }
 
       this.source.put(key, value);

@@ -51,24 +51,27 @@ public class NamespaceController {
 
   @PreAuthorize(value = "@consumerPermissionValidator.hasCreateNamespacePermission(#request, #appId)")
   @RequestMapping(value = "/openapi/v1/apps/{appId}/appnamespaces", method = RequestMethod.POST)
-  public OpenAppNamespaceDTO createNamespace(@PathVariable String appId, @RequestBody OpenAppNamespaceDTO appNamespaceDTO,
-                                         HttpServletRequest request) {
+  public OpenAppNamespaceDTO createNamespace(@PathVariable String appId,
+      @RequestBody OpenAppNamespaceDTO appNamespaceDTO, HttpServletRequest request) {
 
     if (!Objects.equals(appId, appNamespaceDTO.getAppId())) {
-      throw new BadRequestException(String.format("AppId not equal. AppId in path = %s, AppId in payload = %s", appId,
-                                                  appNamespaceDTO.getAppId()));
+      throw new BadRequestException(
+          String.format("AppId not equal. AppId in path = %s, AppId in payload = %s", appId,
+              appNamespaceDTO.getAppId()));
     }
-    RequestPrecondition.checkArgumentsNotEmpty(appNamespaceDTO.getAppId(), appNamespaceDTO.getName(),
-                                               appNamespaceDTO.getFormat(), appNamespaceDTO.getDataChangeCreatedBy());
+    RequestPrecondition.checkArgumentsNotEmpty(appNamespaceDTO.getAppId(),
+        appNamespaceDTO.getName(), appNamespaceDTO.getFormat(),
+        appNamespaceDTO.getDataChangeCreatedBy());
 
     if (!InputValidator.isValidAppNamespace(appNamespaceDTO.getName())) {
-      throw new BadRequestException(String.format("Namespace格式错误: %s",
-                                                  InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE + " & "
-                                                  + InputValidator.INVALID_NAMESPACE_NAMESPACE_MESSAGE));
+      throw new BadRequestException(
+          String.format("Namespace格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE
+              + " & " + InputValidator.INVALID_NAMESPACE_NAMESPACE_MESSAGE));
     }
 
     if (!ConfigFileFormat.isValidFormat(appNamespaceDTO.getFormat())) {
-      throw new BadRequestException(String.format("Invalid namespace format. format = %s", appNamespaceDTO.getFormat()));
+      throw new BadRequestException(
+          String.format("Invalid namespace format. format = %s", appNamespaceDTO.getFormat()));
     }
 
     String operator = appNamespaceDTO.getDataChangeCreatedBy();
@@ -86,19 +89,17 @@ public class NamespaceController {
 
   @RequestMapping(value = "/openapi/v1/envs/{env}/apps/{appId}/clusters/{clusterName}/namespaces", method = RequestMethod.GET)
   public List<OpenNamespaceDTO> findNamespaces(@PathVariable String appId, @PathVariable String env,
-                                               @PathVariable String clusterName) {
+      @PathVariable String clusterName) {
 
-    return OpenApiBeanUtils
-        .batchTransformFromNamespaceBOs(namespaceService.findNamespaceBOs(appId, Env
-            .fromString(env), clusterName));
+    return OpenApiBeanUtils.batchTransformFromNamespaceBOs(
+        namespaceService.findNamespaceBOs(appId, Env.fromString(env), clusterName));
   }
 
   @RequestMapping(value = "/openapi/v1/envs/{env}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName:.+}", method = RequestMethod.GET)
   public OpenNamespaceDTO loadNamespace(@PathVariable String appId, @PathVariable String env,
-                                        @PathVariable String clusterName, @PathVariable String
-                                            namespaceName) {
-    NamespaceBO namespaceBO = namespaceService.loadNamespaceBO(appId, Env.fromString
-        (env), clusterName, namespaceName);
+      @PathVariable String clusterName, @PathVariable String namespaceName) {
+    NamespaceBO namespaceBO =
+        namespaceService.loadNamespaceBO(appId, Env.fromString(env), clusterName, namespaceName);
     if (namespaceBO == null) {
       return null;
     }
@@ -107,13 +108,12 @@ public class NamespaceController {
 
   @RequestMapping(value = "/openapi/v1/envs/{env}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/lock", method = RequestMethod.GET)
   public OpenNamespaceLockDTO getNamespaceLock(@PathVariable String appId, @PathVariable String env,
-                                               @PathVariable String clusterName, @PathVariable
-                                                   String namespaceName) {
+      @PathVariable String clusterName, @PathVariable String namespaceName) {
 
-    NamespaceDTO namespace = namespaceService.loadNamespaceBaseInfo(appId, Env
-        .fromString(env), clusterName, namespaceName);
-    NamespaceLockDTO lockDTO = namespaceLockService.getNamespaceLock(appId, Env
-        .fromString(env), clusterName, namespaceName);
+    NamespaceDTO namespace = namespaceService.loadNamespaceBaseInfo(appId, Env.fromString(env),
+        clusterName, namespaceName);
+    NamespaceLockDTO lockDTO = namespaceLockService.getNamespaceLock(appId, Env.fromString(env),
+        clusterName, namespaceName);
     return OpenApiBeanUtils.transformFromNamespaceLockDTO(namespace.getNamespaceName(), lockDTO);
   }
 

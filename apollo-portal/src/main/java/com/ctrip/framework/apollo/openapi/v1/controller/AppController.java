@@ -26,7 +26,7 @@ public class AppController {
   private ClusterService clusterService;
 
   @RequestMapping(value = "/apps/{appId}/envclusters", method = RequestMethod.GET)
-  public List<OpenEnvClusterDTO> loadEnvClusterInfo(@PathVariable String appId){
+  public List<OpenEnvClusterDTO> loadEnvClusterInfo(@PathVariable String appId) {
 
     List<OpenEnvClusterDTO> envClusters = new LinkedList<>();
 

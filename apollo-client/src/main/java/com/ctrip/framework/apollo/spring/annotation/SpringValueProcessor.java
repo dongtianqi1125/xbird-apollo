@@ -29,7 +29,7 @@ import com.google.common.collect.Multimap;
 /**
  * Spring value processor of field or method which has @Value and xml config placeholders.
  *
- * @author github.com/zhegexiaohuozi  seimimaster@gmail.com
+ * @author github.com/zhegexiaohuozi seimimaster@gmail.com
  * @since 2017/12/20.
  */
 public class SpringValueProcessor extends ApolloProcessor implements BeanFactoryPostProcessor {
@@ -53,8 +53,8 @@ public class SpringValueProcessor extends ApolloProcessor implements BeanFactory
   public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
       throws BeansException {
     if (configUtil.isAutoUpdateInjectedSpringPropertiesEnabled()) {
-      beanName2SpringValueDefinitions = SpringValueDefinitionProcessor
-          .getBeanName2SpringValueDefinitions();
+      beanName2SpringValueDefinitions =
+          SpringValueDefinitionProcessor.getBeanName2SpringValueDefinitions();
     }
   }
 
@@ -91,12 +91,12 @@ public class SpringValueProcessor extends ApolloProcessor implements BeanFactory
 
   @Override
   protected void processMethod(Object bean, String beanName, Method method) {
-    //register @Value on method
+    // register @Value on method
     Value value = method.getAnnotation(Value.class);
     if (value == null) {
       return;
     }
-    //skip Configuration bean methods
+    // skip Configuration bean methods
     if (method.getAnnotation(Bean.class) != null) {
       return;
     }
@@ -119,18 +119,17 @@ public class SpringValueProcessor extends ApolloProcessor implements BeanFactory
     }
   }
 
-
   private void processBeanPropertyValues(Object bean, String beanName) {
-    Collection<SpringValueDefinition> propertySpringValues = beanName2SpringValueDefinitions
-        .get(beanName);
+    Collection<SpringValueDefinition> propertySpringValues =
+        beanName2SpringValueDefinitions.get(beanName);
     if (propertySpringValues == null || propertySpringValues.isEmpty()) {
       return;
     }
 
     for (SpringValueDefinition definition : propertySpringValues) {
       try {
-        PropertyDescriptor pd = BeanUtils
-            .getPropertyDescriptor(bean.getClass(), definition.getPropertyName());
+        PropertyDescriptor pd =
+            BeanUtils.getPropertyDescriptor(bean.getClass(), definition.getPropertyName());
         Method method = pd.getWriteMethod();
         if (method == null) {
           continue;

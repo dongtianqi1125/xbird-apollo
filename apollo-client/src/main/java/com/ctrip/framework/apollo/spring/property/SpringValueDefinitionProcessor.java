@@ -43,14 +43,16 @@ public class SpringValueDefinitionProcessor implements BeanDefinitionRegistryPos
   }
 
   @Override
-  public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+  public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
+      throws BeansException {
     if (configUtil.isAutoUpdateInjectedSpringPropertiesEnabled()) {
       processPropertyValues(registry);
     }
   }
 
   @Override
-  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
+      throws BeansException {
 
   }
 

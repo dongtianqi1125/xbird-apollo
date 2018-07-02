@@ -12,7 +12,6 @@ public class MergeEmailBuilder extends ConfigPublishEmailBuilder {
 
   private static final String EMAIL_SUBJECT = "[Apollo] 全量发布";
 
-
   @Override
   protected String subject() {
     return EMAIL_SUBJECT;

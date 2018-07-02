@@ -11,7 +11,9 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 /**
  * Use this annotation to register Apollo ConfigChangeListener.
  *
- * <p>Usage example:</p>
+ * <p>
+ * Usage example:
+ * </p>
  * <pre class="code">
  * //Listener on namespaces of "someNamespace" and "anotherNamespace"
  * &#064;ApolloConfigChangeListener({"someNamespace","anotherNamespace"})

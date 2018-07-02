@@ -36,8 +36,8 @@ public class ItemController {
   @PreAcquireNamespaceLock
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.POST)
   public ItemDTO create(@PathVariable("appId") String appId,
-                        @PathVariable("clusterName") String clusterName,
-                        @PathVariable("namespaceName") String namespaceName, @RequestBody ItemDTO dto) {
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName, @RequestBody ItemDTO dto) {
     Item entity = BeanUtils.transfrom(Item.class, dto);
 
     ConfigChangeContentBuilder builder = new ConfigChangeContentBuilder();
@@ -65,13 +65,11 @@ public class ItemController {
   @PreAcquireNamespaceLock
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{itemId}", method = RequestMethod.PUT)
   public ItemDTO update(@PathVariable("appId") String appId,
-                        @PathVariable("clusterName") String clusterName,
-                        @PathVariable("namespaceName") String namespaceName,
-                        @PathVariable("itemId") long itemId,
-                        @RequestBody ItemDTO itemDTO) {
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName, @PathVariable("itemId") long itemId,
+      @RequestBody ItemDTO itemDTO) {
 
     Item entity = BeanUtils.transfrom(Item.class, itemDTO);
-
     ConfigChangeContentBuilder builder = new ConfigChangeContentBuilder();
 
     Item managedEntity = itemService.findOne(itemId);
@@ -81,7 +79,7 @@ public class ItemController {
 
     Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedEntity);
 
-    //protect. only value,comment,lastModifiedBy can be modified
+    // protect. only value,comment,lastModifiedBy can be modified
     managedEntity.setValue(entity.getValue());
     managedEntity.setComment(entity.getComment());
     managedEntity.setDataChangeLastModifiedBy(entity.getDataChangeLastModifiedBy());
@@ -127,9 +125,10 @@ public class ItemController {
 
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.GET)
   public List<ItemDTO> findItems(@PathVariable("appId") String appId,
-                                 @PathVariable("clusterName") String clusterName,
-                                 @PathVariable("namespaceName") String namespaceName) {
-    return BeanUtils.batchTransform(ItemDTO.class, itemService.findItemsWithOrdered(appId, clusterName, namespaceName));
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName) {
+    return BeanUtils.batchTransform(ItemDTO.class,
+        itemService.findItemsWithOrdered(appId, clusterName, namespaceName));
   }
 
   @RequestMapping(value = "/items/{itemId}", method = RequestMethod.GET)
@@ -143,8 +142,8 @@ public class ItemController {
 
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{key:.+}", method = RequestMethod.GET)
   public ItemDTO get(@PathVariable("appId") String appId,
-                     @PathVariable("clusterName") String clusterName,
-                     @PathVariable("namespaceName") String namespaceName, @PathVariable("key") String key) {
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName, @PathVariable("key") String key) {
     Item item = itemService.findOne(appId, clusterName, namespaceName, key);
     if (item == null) {
       throw new NotFoundException(

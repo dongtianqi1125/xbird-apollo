@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface FavoriteRepository extends PagingAndSortingRepository<Favorite, Long> {
 
-  List<Favorite> findByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(String userId, Pageable page);
+  List<Favorite> findByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(String userId,
+      Pageable page);
 
   List<Favorite> findByAppIdOrderByPositionAscDataChangeCreatedTimeAsc(String appId, Pageable page);
 

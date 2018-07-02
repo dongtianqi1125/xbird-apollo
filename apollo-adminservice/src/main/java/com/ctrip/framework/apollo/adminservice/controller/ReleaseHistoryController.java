@@ -30,49 +30,40 @@ import java.util.Map;
 public class ReleaseHistoryController {
 
   private Gson gson = new Gson();
-  private Type configurationTypeReference = new TypeToken<Map<String, Object>>() {
-  }.getType();
+  private Type configurationTypeReference = new TypeToken<Map<String, Object>>() {}.getType();
 
   @Autowired
   private ReleaseHistoryService releaseHistoryService;
 
-  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/histories",
-      method = RequestMethod.GET)
-  public PageDTO<ReleaseHistoryDTO> findReleaseHistoriesByNamespace(
-      @PathVariable String appId, @PathVariable String clusterName,
-      @PathVariable String namespaceName,
-      Pageable pageable) {
-
-    Page<ReleaseHistory> result = releaseHistoryService.findReleaseHistoriesByNamespace(appId, clusterName,
-                                                                                        namespaceName, pageable);
+  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/histories", method = RequestMethod.GET)
+  public PageDTO<ReleaseHistoryDTO> findReleaseHistoriesByNamespace(@PathVariable String appId,
+      @PathVariable String clusterName, @PathVariable String namespaceName, Pageable pageable) {
+    Page<ReleaseHistory> result = releaseHistoryService.findReleaseHistoriesByNamespace(appId,
+        clusterName, namespaceName, pageable);
     return transform2PageDTO(result, pageable);
   }
 
 
   @RequestMapping(value = "/releases/histories/by_release_id_and_operation", method = RequestMethod.GET)
   public PageDTO<ReleaseHistoryDTO> findReleaseHistoryByReleaseIdAndOperation(
-      @RequestParam("releaseId") long releaseId,
-      @RequestParam("operation") int operation,
+      @RequestParam("releaseId") long releaseId, @RequestParam("operation") int operation,
       Pageable pageable) {
-
-    Page<ReleaseHistory> result = releaseHistoryService.findByReleaseIdAndOperation(releaseId, operation, pageable);
-
+    Page<ReleaseHistory> result =
+        releaseHistoryService.findByReleaseIdAndOperation(releaseId, operation, pageable);
     return transform2PageDTO(result, pageable);
   }
 
   @RequestMapping(value = "/releases/histories/by_previous_release_id_and_operation", method = RequestMethod.GET)
   public PageDTO<ReleaseHistoryDTO> findReleaseHistoryByPreviousReleaseIdAndOperation(
       @RequestParam("previousReleaseId") long previousReleaseId,
-      @RequestParam("operation") int operation,
-      Pageable pageable) {
-
-    Page<ReleaseHistory> result = releaseHistoryService.findByPreviousReleaseIdAndOperation(previousReleaseId, operation, pageable);
-
+      @RequestParam("operation") int operation, Pageable pageable) {
+    Page<ReleaseHistory> result = releaseHistoryService
+        .findByPreviousReleaseIdAndOperation(previousReleaseId, operation, pageable);
     return transform2PageDTO(result, pageable);
-
   }
 
-  private PageDTO<ReleaseHistoryDTO> transform2PageDTO(Page<ReleaseHistory> releaseHistoriesPage, Pageable pageable){
+  private PageDTO<ReleaseHistoryDTO> transform2PageDTO(Page<ReleaseHistory> releaseHistoriesPage,
+      Pageable pageable) {
     if (!releaseHistoriesPage.hasContent()) {
       return null;
     }
@@ -89,9 +80,8 @@ public class ReleaseHistoryController {
   private ReleaseHistoryDTO transformReleaseHistory2DTO(ReleaseHistory releaseHistory) {
     ReleaseHistoryDTO dto = new ReleaseHistoryDTO();
     BeanUtils.copyProperties(releaseHistory, dto, "operationContext");
-    dto.setOperationContext(gson.fromJson(releaseHistory.getOperationContext(),
-                                          configurationTypeReference));
-
+    dto.setOperationContext(
+        gson.fromJson(releaseHistory.getOperationContext(), configurationTypeReference));
     return dto;
   }
 }

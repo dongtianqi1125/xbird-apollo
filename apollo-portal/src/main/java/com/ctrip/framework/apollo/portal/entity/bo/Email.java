@@ -41,5 +41,4 @@ public class Email {
     this.body = body;
   }
 
-
 }

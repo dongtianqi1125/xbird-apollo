@@ -36,14 +36,12 @@ public class ReleaseController {
   @PreAuthorize(value = "@consumerPermissionValidator.hasReleaseNamespacePermission(#request, #appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases", method = RequestMethod.POST)
   public OpenReleaseDTO createRelease(@PathVariable String appId, @PathVariable String env,
-                                      @PathVariable String clusterName,
-                                      @PathVariable String namespaceName,
-                                      @RequestBody NamespaceReleaseModel model,
-                                      HttpServletRequest request) {
+      @PathVariable String clusterName, @PathVariable String namespaceName,
+      @RequestBody NamespaceReleaseModel model, HttpServletRequest request) {
 
     checkModel(model != null);
-    RequestPrecondition.checkArguments(!StringUtils.isContainEmpty(model.getReleasedBy(), model
-            .getReleaseTitle()),
+    RequestPrecondition.checkArguments(
+        !StringUtils.isContainEmpty(model.getReleasedBy(), model.getReleaseTitle()),
         "Params(releaseTitle and releasedBy) can not be empty");
 
     if (userService.findByUserId(model.getReleasedBy()) == null) {
@@ -59,11 +57,11 @@ public class ReleaseController {
   }
 
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/latest", method = RequestMethod.GET)
-  public OpenReleaseDTO loadLatestActiveRelease(@PathVariable String appId, @PathVariable String env,
-                                                @PathVariable String clusterName, @PathVariable
-                                                    String namespaceName) {
-    ReleaseDTO releaseDTO = releaseService.loadLatestRelease(appId, Env.fromString
-        (env), clusterName, namespaceName);
+  public OpenReleaseDTO loadLatestActiveRelease(@PathVariable String appId,
+      @PathVariable String env, @PathVariable String clusterName,
+      @PathVariable String namespaceName) {
+    ReleaseDTO releaseDTO =
+        releaseService.loadLatestRelease(appId, Env.fromString(env), clusterName, namespaceName);
     if (releaseDTO == null) {
       return null;
     }

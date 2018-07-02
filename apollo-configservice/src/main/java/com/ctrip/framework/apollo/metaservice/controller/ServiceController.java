@@ -20,7 +20,6 @@ public class ServiceController {
   @Autowired
   private DiscoveryService discoveryService;
 
-
   @RequestMapping("/meta")
   public List<ServiceDTO> getMetaService() {
     List<InstanceInfo> instances = discoveryService.getMetaServiceInstances();

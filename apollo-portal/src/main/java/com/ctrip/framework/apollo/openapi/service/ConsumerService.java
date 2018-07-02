@@ -37,7 +37,8 @@ import com.google.common.hash.Hashing;
 @Service
 public class ConsumerService {
 
-  private static final FastDateFormat TIMESTAMP_FORMAT = FastDateFormat.getInstance("yyyyMMddHHmmss");
+  private static final FastDateFormat TIMESTAMP_FORMAT =
+      FastDateFormat.getInstance("yyyyMMddHHmmss");
   private static final Joiner KEY_JOINER = Joiner.on("|");
 
   @Autowired
@@ -102,8 +103,8 @@ public class ConsumerService {
     if (Strings.isNullOrEmpty(token)) {
       return null;
     }
-    ConsumerToken consumerToken = consumerTokenRepository.findTopByTokenAndExpiresAfter(token,
-                                                                                        new Date());
+    ConsumerToken consumerToken =
+        consumerTokenRepository.findTopByTokenAndExpiresAfter(token, new Date());
     return consumerToken == null ? null : consumerToken.getConsumerId();
   }
 
@@ -112,37 +113,45 @@ public class ConsumerService {
   }
 
   @Transactional
-  public List<ConsumerRole> assignNamespaceRoleToConsumer(String token, String appId, String namespaceName) {
+  public List<ConsumerRole> assignNamespaceRoleToConsumer(String token, String appId,
+      String namespaceName) {
     Long consumerId = getConsumerIdByToken(token);
     if (consumerId == null) {
       throw new BadRequestException("Token is Illegal");
     }
 
-    Role namespaceModifyRole =
-        rolePermissionService.findRoleByRoleName(RoleUtils.buildModifyNamespaceRoleName(appId, namespaceName));
-    Role namespaceReleaseRole =
-        rolePermissionService.findRoleByRoleName(RoleUtils.buildReleaseNamespaceRoleName(appId, namespaceName));
+    Role namespaceModifyRole = rolePermissionService
+        .findRoleByRoleName(RoleUtils.buildModifyNamespaceRoleName(appId, namespaceName));
+    Role namespaceReleaseRole = rolePermissionService
+        .findRoleByRoleName(RoleUtils.buildReleaseNamespaceRoleName(appId, namespaceName));
 
     if (namespaceModifyRole == null || namespaceReleaseRole == null) {
-      throw new BadRequestException("Namespace's role does not exist. Please check whether namespace has created.");
+      throw new BadRequestException(
+          "Namespace's role does not exist. Please check whether namespace has created.");
     }
 
     long namespaceModifyRoleId = namespaceModifyRole.getId();
     long namespaceReleaseRoleId = namespaceReleaseRole.getId();
 
-    ConsumerRole managedModifyRole = consumerRoleRepository.findByConsumerIdAndRoleId(consumerId, namespaceModifyRoleId);
-    ConsumerRole managedReleaseRole = consumerRoleRepository.findByConsumerIdAndRoleId(consumerId, namespaceReleaseRoleId);
+    ConsumerRole managedModifyRole =
+        consumerRoleRepository.findByConsumerIdAndRoleId(consumerId, namespaceModifyRoleId);
+    ConsumerRole managedReleaseRole =
+        consumerRoleRepository.findByConsumerIdAndRoleId(consumerId, namespaceReleaseRoleId);
     if (managedModifyRole != null && managedReleaseRole != null) {
       return Arrays.asList(managedModifyRole, managedReleaseRole);
     }
 
     String operator = userInfoHolder.getUser().getUserId();
 
-    ConsumerRole namespaceModifyConsumerRole = createConsumerRole(consumerId, namespaceModifyRoleId, operator);
-    ConsumerRole namespaceReleaseConsumerRole = createConsumerRole(consumerId, namespaceReleaseRoleId, operator);
+    ConsumerRole namespaceModifyConsumerRole =
+        createConsumerRole(consumerId, namespaceModifyRoleId, operator);
+    ConsumerRole namespaceReleaseConsumerRole =
+        createConsumerRole(consumerId, namespaceReleaseRoleId, operator);
 
-    ConsumerRole createdModifyConsumerRole = consumerRoleRepository.save(namespaceModifyConsumerRole);
-    ConsumerRole createdReleaseConsumerRole = consumerRoleRepository.save(namespaceReleaseConsumerRole);
+    ConsumerRole createdModifyConsumerRole =
+        consumerRoleRepository.save(namespaceModifyConsumerRole);
+    ConsumerRole createdReleaseConsumerRole =
+        consumerRoleRepository.save(namespaceReleaseConsumerRole);
 
     return Arrays.asList(createdModifyConsumerRole, createdReleaseConsumerRole);
   }
@@ -154,13 +163,16 @@ public class ConsumerService {
       throw new BadRequestException("Token is Illegal");
     }
 
-    Role masterRole = rolePermissionService.findRoleByRoleName(RoleUtils.buildAppMasterRoleName(appId));
+    Role masterRole =
+        rolePermissionService.findRoleByRoleName(RoleUtils.buildAppMasterRoleName(appId));
     if (masterRole == null) {
-      throw new BadRequestException("App's role does not exist. Please check whether app has created.");
+      throw new BadRequestException(
+          "App's role does not exist. Please check whether app has created.");
     }
 
     long roleId = masterRole.getId();
-    ConsumerRole managedModifyRole = consumerRoleRepository.findByConsumerIdAndRoleId(consumerId, roleId);
+    ConsumerRole managedModifyRole =
+        consumerRoleRepository.findByConsumerIdAndRoleId(consumerId, roleId);
     if (managedModifyRole != null) {
       return managedModifyRole;
     }
@@ -177,7 +189,7 @@ public class ConsumerService {
 
   @Transactional
   public ConsumerToken createConsumerToken(ConsumerToken entity) {
-    entity.setId(0); //for protection
+    entity.setId(0); // for protection
 
     return consumerTokenRepository.save(entity);
   }
@@ -207,17 +219,17 @@ public class ConsumerService {
     if (consumerToken.getDataChangeCreatedTime() == null) {
       consumerToken.setDataChangeCreatedTime(new Date());
     }
-    consumerToken.setToken(generateToken(consumer.getAppId(), consumerToken
-        .getDataChangeCreatedTime(), portalConfig.consumerTokenSalt()));
+    consumerToken.setToken(generateToken(consumer.getAppId(),
+        consumerToken.getDataChangeCreatedTime(), portalConfig.consumerTokenSalt()));
   }
 
-  String generateToken(String consumerAppId, Date generationTime, String
-      consumerTokenSalt) {
-    return Hashing.sha1().hashString(KEY_JOINER.join(consumerAppId, TIMESTAMP_FORMAT.format
-        (generationTime), consumerTokenSalt), Charsets.UTF_8).toString();
+  String generateToken(String consumerAppId, Date generationTime, String consumerTokenSalt) {
+    return Hashing.sha1().hashString(
+        KEY_JOINER.join(consumerAppId, TIMESTAMP_FORMAT.format(generationTime), consumerTokenSalt),
+        Charsets.UTF_8).toString();
   }
 
-    ConsumerRole createConsumerRole(Long consumerId, Long roleId, String operator) {
+  ConsumerRole createConsumerRole(Long consumerId, Long roleId, String operator) {
     ConsumerRole consumerRole = new ConsumerRole();
 
     consumerRole.setConsumerId(consumerId);

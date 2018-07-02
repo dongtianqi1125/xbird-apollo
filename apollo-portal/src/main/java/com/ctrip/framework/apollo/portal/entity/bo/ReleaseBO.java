@@ -8,7 +8,6 @@ import java.util.Set;
 public class ReleaseBO {
 
   private ReleaseDTO baseInfo;
-
   private Set<KVEntity> items;
 
   public ReleaseDTO getBaseInfo() {

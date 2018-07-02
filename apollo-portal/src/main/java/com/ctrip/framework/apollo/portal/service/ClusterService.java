@@ -36,11 +36,11 @@ public class ClusterService {
     return clusterDTO;
   }
 
-  public void deleteCluster(Env env, String appId, String clusterName){
+  public void deleteCluster(Env env, String appId, String clusterName) {
     clusterAPI.delete(env, appId, clusterName, userInfoHolder.getUser().getUserId());
   }
 
-  public ClusterDTO loadCluster(String appId, Env env, String clusterName){
+  public ClusterDTO loadCluster(String appId, Env env, String clusterName) {
     return clusterAPI.loadCluster(appId, env, clusterName);
   }
 

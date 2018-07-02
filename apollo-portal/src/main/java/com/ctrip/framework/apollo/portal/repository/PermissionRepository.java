@@ -20,5 +20,5 @@ public interface PermissionRepository extends PagingAndSortingRepository<Permiss
    * find permissions by permission types and targetId
    */
   List<Permission> findByPermissionTypeInAndTargetId(Collection<String> permissionTypes,
-                                                     String targetId);
+      String targetId);
 }

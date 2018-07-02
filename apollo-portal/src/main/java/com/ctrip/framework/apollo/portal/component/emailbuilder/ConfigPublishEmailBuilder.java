@@ -38,7 +38,7 @@ public abstract class ConfigPublishEmailBuilder {
 
   private static final String EMERGENCY_PUBLISH_TAG = "<span style='color:red'>(紧急发布)</span>";
 
-  //email content common field placeholder
+  // email content common field placeholder
   private static final String EMAIL_CONTENT_FIELD_APPID = "#\\{appId\\}";
   private static final String EMAIL_CONTENT_FIELD_ENV = "#\\{env}";
   private static final String EMAIL_CONTENT_FIELD_CLUSTER = "#\\{clusterName}";
@@ -49,17 +49,18 @@ public abstract class ConfigPublishEmailBuilder {
   private static final String EMAIL_CONTENT_FIELD_RELEASE_HISTORY_ID = "#\\{releaseHistoryId}";
   private static final String EMAIL_CONTENT_FIELD_RELEASE_TITLE = "#\\{releaseTitle}";
   private static final String EMAIL_CONTENT_FIELD_RELEASE_COMMENT = "#\\{releaseComment}";
-  private static final String EMAIL_CONTENT_FIELD_APOLLO_SERVER_ADDRESS = "#\\{apollo.portal.address}";
+  private static final String EMAIL_CONTENT_FIELD_APOLLO_SERVER_ADDRESS =
+      "#\\{apollo.portal.address}";
   private static final String EMAIL_CONTENT_FIELD_DIFF_CONTENT = "#\\{diffContent}";
   private static final String EMAIL_CONTENT_FIELD_EMERGENCY_PUBLISH = "#\\{emergencyPublish}";
 
   private static final String EMAIL_CONTENT_DIFF_MODULE = "#\\{diffModule}";
   protected static final String EMAIL_CONTENT_GRAY_RULES_MODULE = "#\\{rulesModule}";
 
-  //email content special field placeholder
+  // email content special field placeholder
   protected static final String EMAIL_CONTENT_GRAY_RULES_CONTENT = "#\\{rulesContent}";
 
-  //set config's value max length to protect email.
+  // set config's value max length to protect email.
   protected static final int VALUE_MAX_LENGTH = 100;
 
   protected FastDateFormat dateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
@@ -106,7 +107,7 @@ public abstract class ConfigPublishEmailBuilder {
     email.setRecipients(recipients(releaseHistory.getAppId(), releaseHistory.getNamespaceName()));
 
     String emailBody = emailContent(env, releaseHistory);
-    //clear not used module
+    // clear not used module
     emailBody = emailBody.replaceAll(EMAIL_CONTENT_DIFF_MODULE, "");
     emailBody = emailBody.replaceAll(EMAIL_CONTENT_GRAY_RULES_MODULE, "");
     email.setBody(emailBody);
@@ -125,28 +126,38 @@ public abstract class ConfigPublishEmailBuilder {
     String renderResult = template;
 
     Map<String, Object> operationContext = releaseHistory.getOperationContext();
-    boolean isEmergencyPublish = operationContext.containsKey(ReleaseOperationContext.IS_EMERGENCY_PUBLISH) &&
-                                 (boolean) operationContext.get(ReleaseOperationContext.IS_EMERGENCY_PUBLISH);
+    boolean isEmergencyPublish =
+        operationContext.containsKey(ReleaseOperationContext.IS_EMERGENCY_PUBLISH)
+            && (boolean) operationContext.get(ReleaseOperationContext.IS_EMERGENCY_PUBLISH);
     if (isEmergencyPublish) {
-      renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_EMERGENCY_PUBLISH, Matcher.quoteReplacement(EMERGENCY_PUBLISH_TAG));
+      renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_EMERGENCY_PUBLISH,
+          Matcher.quoteReplacement(EMERGENCY_PUBLISH_TAG));
     } else {
       renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_EMERGENCY_PUBLISH, "");
     }
 
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_APPID, Matcher.quoteReplacement(releaseHistory.getAppId()));
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_ENV, Matcher.quoteReplacement(env.toString()));
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_CLUSTER, Matcher.quoteReplacement(releaseHistory.getClusterName()));
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_NAMESPACE, Matcher.quoteReplacement(releaseHistory.getNamespaceName()));
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_OPERATOR, Matcher.quoteReplacement(releaseHistory.getOperator()));
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_TITLE, Matcher.quoteReplacement(releaseHistory.getReleaseTitle()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_APPID,
+        Matcher.quoteReplacement(releaseHistory.getAppId()));
     renderResult =
-            renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_ID, String.valueOf(releaseHistory.getReleaseId()));
-    renderResult =
-            renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_HISTORY_ID, String.valueOf(releaseHistory.getId()));
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_COMMENT, Matcher.quoteReplacement(releaseHistory.getReleaseComment()));
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_APOLLO_SERVER_ADDRESS, getApolloPortalAddress());
-    return renderResult
-            .replaceAll(EMAIL_CONTENT_FIELD_RELEASE_TIME, dateFormat.format(releaseHistory.getReleaseTime()));
+        renderResult.replaceAll(EMAIL_CONTENT_FIELD_ENV, Matcher.quoteReplacement(env.toString()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_CLUSTER,
+        Matcher.quoteReplacement(releaseHistory.getClusterName()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_NAMESPACE,
+        Matcher.quoteReplacement(releaseHistory.getNamespaceName()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_OPERATOR,
+        Matcher.quoteReplacement(releaseHistory.getOperator()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_TITLE,
+        Matcher.quoteReplacement(releaseHistory.getReleaseTitle()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_ID,
+        String.valueOf(releaseHistory.getReleaseId()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_HISTORY_ID,
+        String.valueOf(releaseHistory.getId()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_COMMENT,
+        Matcher.quoteReplacement(releaseHistory.getReleaseComment()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_APOLLO_SERVER_ADDRESS,
+        getApolloPortalAddress());
+    return renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_TIME,
+        dateFormat.format(releaseHistory.getReleaseTime()));
   }
 
   private String renderDiffModule(String bodyTemplate, Env env, ReleaseHistoryBO releaseHistory) {
@@ -158,9 +169,9 @@ public abstract class ConfigPublishEmailBuilder {
       appNamespace = appNamespaceService.findPublicAppNamespace(namespaceName);
     }
 
-    //don't show diff content if namespace's format is file
-    if (appNamespace == null ||
-            !appNamespace.getFormat().equals(ConfigFileFormat.Properties.getValue())) {
+    // don't show diff content if namespace's format is file
+    if (appNamespace == null
+        || !appNamespace.getFormat().equals(ConfigFileFormat.Properties.getValue())) {
 
       return bodyTemplate.replaceAll(EMAIL_CONTENT_DIFF_MODULE, "<br><h4>变更内容请点击链接到Apollo上查看</h4>");
     }
@@ -180,43 +191,50 @@ public abstract class ConfigPublishEmailBuilder {
       newValue = newValue == null ? "" : newValue;
 
       changesHtmlBuilder.append("<tr>");
-      changesHtmlBuilder.append("<td width=\"10%\">").append(change.getType().toString()).append("</td>");
+      changesHtmlBuilder.append("<td width=\"10%\">").append(change.getType().toString())
+          .append("</td>");
       changesHtmlBuilder.append("<td width=\"20%\">").append(cutOffString(key)).append("</td>");
-      changesHtmlBuilder.append("<td width=\"35%\">").append(cutOffString(oldValue)).append("</td>");
-      changesHtmlBuilder.append("<td width=\"35%\">").append(cutOffString(newValue)).append("</td>");
+      changesHtmlBuilder.append("<td width=\"35%\">").append(cutOffString(oldValue))
+          .append("</td>");
+      changesHtmlBuilder.append("<td width=\"35%\">").append(cutOffString(newValue))
+          .append("</td>");
 
       changesHtmlBuilder.append("</tr>");
     }
 
     String diffContent = Matcher.quoteReplacement(changesHtmlBuilder.toString());
     String diffModuleTemplate = getDiffModuleTemplate();
-    String diffModuleRenderResult = diffModuleTemplate.replaceAll(EMAIL_CONTENT_FIELD_DIFF_CONTENT, diffContent);
+    String diffModuleRenderResult =
+        diffModuleTemplate.replaceAll(EMAIL_CONTENT_FIELD_DIFF_CONTENT, diffContent);
     return bodyTemplate.replaceAll(EMAIL_CONTENT_DIFF_MODULE, diffModuleRenderResult);
   }
 
   private ReleaseCompareResult getReleaseCompareResult(Env env, ReleaseHistoryBO releaseHistory) {
     if (releaseHistory.getOperation() == ReleaseOperation.GRAY_RELEASE
-            && releaseHistory.getPreviousReleaseId() == 0) {
-      ReleaseDTO masterLatestActiveRelease = releaseService.loadLatestRelease(
-              releaseHistory.getAppId(), env, releaseHistory.getClusterName(), releaseHistory.getNamespaceName());
-      ReleaseDTO branchLatestActiveRelease = releaseService.findReleaseById(env, releaseHistory.getReleaseId());
+        && releaseHistory.getPreviousReleaseId() == 0) {
+      ReleaseDTO masterLatestActiveRelease =
+          releaseService.loadLatestRelease(releaseHistory.getAppId(), env,
+              releaseHistory.getClusterName(), releaseHistory.getNamespaceName());
+      ReleaseDTO branchLatestActiveRelease =
+          releaseService.findReleaseById(env, releaseHistory.getReleaseId());
 
       return releaseService.compare(masterLatestActiveRelease, branchLatestActiveRelease);
     }
 
-    return releaseService.compare(env, releaseHistory.getPreviousReleaseId(), releaseHistory.getReleaseId());
+    return releaseService.compare(env, releaseHistory.getPreviousReleaseId(),
+        releaseHistory.getReleaseId());
   }
 
   private List<String> recipients(String appId, String namespaceName) {
-    Set<UserInfo> modifyRoleUsers =
-            rolePermissionService
-                    .queryUsersWithRole(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE));
-    Set<UserInfo> releaseRoleUsers =
-            rolePermissionService
-                    .queryUsersWithRole(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE));
-    Set<UserInfo> owners = rolePermissionService.queryUsersWithRole(RoleUtils.buildAppMasterRoleName(appId));
+    Set<UserInfo> modifyRoleUsers = rolePermissionService.queryUsersWithRole(
+        RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE));
+    Set<UserInfo> releaseRoleUsers = rolePermissionService.queryUsersWithRole(
+        RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE));
+    Set<UserInfo> owners =
+        rolePermissionService.queryUsersWithRole(RoleUtils.buildAppMasterRoleName(appId));
 
-    Set<String> userIds = new HashSet<>(modifyRoleUsers.size() + releaseRoleUsers.size() + owners.size());
+    Set<String> userIds =
+        new HashSet<>(modifyRoleUsers.size() + releaseRoleUsers.size() + owners.size());
 
     for (UserInfo userInfo : modifyRoleUsers) {
       userIds.add(userInfo.getUserId());

@@ -17,20 +17,20 @@ public class NamespaceLockService {
   @Autowired
   private PortalConfig portalConfig;
 
-
-  public NamespaceLockDTO getNamespaceLock(String appId, Env env, String clusterName, String namespaceName) {
+  public NamespaceLockDTO getNamespaceLock(String appId, Env env, String clusterName,
+      String namespaceName) {
     return namespaceLockAPI.getNamespaceLockOwner(appId, env, clusterName, namespaceName);
   }
 
-  public LockInfo getNamespaceLockInfo(String appId, Env env, String clusterName, String namespaceName) {
+  public LockInfo getNamespaceLockInfo(String appId, Env env, String clusterName,
+      String namespaceName) {
     LockInfo lockInfo = new LockInfo();
 
-    NamespaceLockDTO namespaceLockDTO = namespaceLockAPI.getNamespaceLockOwner(appId, env, clusterName, namespaceName);
+    NamespaceLockDTO namespaceLockDTO =
+        namespaceLockAPI.getNamespaceLockOwner(appId, env, clusterName, namespaceName);
     String lockOwner = namespaceLockDTO == null ? "" : namespaceLockDTO.getDataChangeCreatedBy();
     lockInfo.setLockOwner(lockOwner);
-
     lockInfo.setEmergencyPublishAllowed(portalConfig.isEmergencyPublishAllowed(env));
-
     return lockInfo;
   }
 

@@ -19,7 +19,8 @@ public class ApolloInjector {
           try {
             s_injector = ServiceBootstrap.loadFirst(Injector.class);
           } catch (Throwable ex) {
-            ApolloConfigException exception = new ApolloConfigException("Unable to initialize Apollo Injector!", ex);
+            ApolloConfigException exception =
+                new ApolloConfigException("Unable to initialize Apollo Injector!", ex);
             Tracer.logError(exception);
             throw exception;
           }
@@ -35,7 +36,8 @@ public class ApolloInjector {
       return getInjector().getInstance(clazz);
     } catch (Throwable ex) {
       Tracer.logError(ex);
-      throw new ApolloConfigException(String.format("Unable to load instance for type %s!", clazz.getName()), ex);
+      throw new ApolloConfigException(
+          String.format("Unable to load instance for type %s!", clazz.getName()), ex);
     }
   }
 
@@ -45,7 +47,8 @@ public class ApolloInjector {
     } catch (Throwable ex) {
       Tracer.logError(ex);
       throw new ApolloConfigException(
-          String.format("Unable to load instance for type %s and name %s !", clazz.getName(), name), ex);
+          String.format("Unable to load instance for type %s and name %s !", clazz.getName(), name),
+          ex);
     }
   }
 }

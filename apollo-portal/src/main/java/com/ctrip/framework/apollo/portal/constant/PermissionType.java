@@ -18,10 +18,8 @@ public interface PermissionType {
   /**
    * namespace level permission
    */
-
   String MODIFY_NAMESPACE = "ModifyNamespace";
 
   String RELEASE_NAMESPACE = "ReleaseNamespace";
-
 
 }

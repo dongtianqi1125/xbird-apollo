@@ -38,8 +38,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class AppNamespaceServiceWithCache implements InitializingBean {
   private static final Logger logger = LoggerFactory.getLogger(AppNamespaceServiceWithCache.class);
-  private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
-      .skipNulls();
+  private static final Joiner STRING_JOINER =
+      Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR).skipNulls();
   @Autowired
   private AppNamespaceRepository appNamespaceRepository;
 
@@ -53,13 +53,13 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
   private ScheduledExecutorService scheduledExecutorService;
   private long maxIdScanned;
 
-  //store namespaceName -> AppNamespace
+  // store namespaceName -> AppNamespace
   private CaseInsensitiveMapWrapper<AppNamespace> publicAppNamespaceCache;
 
-  //store appId+namespaceName -> AppNamespace
+  // store appId+namespaceName -> AppNamespace
   private CaseInsensitiveMapWrapper<AppNamespace> appNamespaceCache;
 
-  //store id -> AppNamespace
+  // store id -> AppNamespace
   private Map<Long, AppNamespace> appNamespaceIdCache;
 
   public AppNamespaceServiceWithCache() {
@@ -71,12 +71,13 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
     publicAppNamespaceCache = new CaseInsensitiveMapWrapper<>(Maps.newConcurrentMap());
     appNamespaceCache = new CaseInsensitiveMapWrapper<>(Maps.newConcurrentMap());
     appNamespaceIdCache = Maps.newConcurrentMap();
-    scheduledExecutorService = Executors.newScheduledThreadPool(1, ApolloThreadFactory
-        .create("AppNamespaceServiceWithCache", true));
+    scheduledExecutorService = Executors.newScheduledThreadPool(1,
+        ApolloThreadFactory.create("AppNamespaceServiceWithCache", true));
   }
 
   public AppNamespace findByAppIdAndNamespace(String appId, String namespaceName) {
-    Preconditions.checkArgument(!StringUtils.isContainEmpty(appId, namespaceName), "appId and namespaceName must not be empty");
+    Preconditions.checkArgument(!StringUtils.isContainEmpty(appId, namespaceName),
+        "appId and namespaceName must not be empty");
     return appNamespaceCache.get(STRING_JOINER.join(appId, namespaceName));
   }
 
@@ -96,7 +97,8 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
   }
 
   public AppNamespace findPublicNamespaceByName(String namespaceName) {
-    Preconditions.checkArgument(!Strings.isNullOrEmpty(namespaceName), "namespaceName must not be empty");
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(namespaceName),
+        "namespaceName must not be empty");
     return publicAppNamespaceCache.get(namespaceName);
   }
 
@@ -118,10 +120,10 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
   @Override
   public void afterPropertiesSet() throws Exception {
     populateDataBaseInterval();
-    scanNewAppNamespaces(); //block the startup process until load finished
+    scanNewAppNamespaces(); // block the startup process until load finished
     scheduledExecutorService.scheduleAtFixedRate(() -> {
-      Transaction transaction = Tracer.newTransaction("Apollo.AppNamespaceServiceWithCache",
-          "rebuildCache");
+      Transaction transaction =
+          Tracer.newTransaction("Apollo.AppNamespaceServiceWithCache", "rebuildCache");
       try {
         this.updateAndDeleteCache();
         transaction.setStatus(Transaction.SUCCESS);
@@ -137,8 +139,8 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
   }
 
   private void scanNewAppNamespaces() {
-    Transaction transaction = Tracer.newTransaction("Apollo.AppNamespaceServiceWithCache",
-        "scanNewAppNamespaces");
+    Transaction transaction =
+        Tracer.newTransaction("Apollo.AppNamespaceServiceWithCache", "scanNewAppNamespaces");
     try {
       this.loadNewAppNamespaces();
       transaction.setStatus(Transaction.SUCCESS);
@@ -150,13 +152,13 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
     }
   }
 
-  //for those new app namespaces
+  // for those new app namespaces
   private void loadNewAppNamespaces() {
     boolean hasMore = true;
     while (hasMore && !Thread.currentThread().isInterrupted()) {
-      //current batch is 500
-      List<AppNamespace> appNamespaces = appNamespaceRepository
-          .findFirst500ByIdGreaterThanOrderByIdAsc(maxIdScanned);
+      // current batch is 500
+      List<AppNamespace> appNamespaces =
+          appNamespaceRepository.findFirst500ByIdGreaterThanOrderByIdAsc(maxIdScanned);
       if (CollectionUtils.isEmpty(appNamespaces)) {
         break;
       }
@@ -178,7 +180,7 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
     }
   }
 
-  //for those updated or deleted app namespaces
+  // for those updated or deleted app namespaces
   private void updateAndDeleteCache() {
     List<Long> ids = Lists.newArrayList(appNamespaceIdCache.keySet());
     if (CollectionUtils.isEmpty(ids)) {
@@ -192,28 +194,28 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
         continue;
       }
 
-      //handle updated
+      // handle updated
       Set<Long> foundIds = handleUpdatedAppNamespaces(appNamespaces);
 
-      //handle deleted
+      // handle deleted
       handleDeletedAppNamespaces(Sets.difference(Sets.newHashSet(toRebuild), foundIds));
     }
   }
 
-  //for those updated app namespaces
+  // for those updated app namespaces
   private Set<Long> handleUpdatedAppNamespaces(Iterable<AppNamespace> appNamespaces) {
     Set<Long> foundIds = Sets.newHashSet();
     for (AppNamespace appNamespace : appNamespaces) {
       foundIds.add(appNamespace.getId());
       AppNamespace thatInCache = appNamespaceIdCache.get(appNamespace.getId());
-      if (thatInCache != null && appNamespace.getDataChangeLastModifiedTime().after(thatInCache
-          .getDataChangeLastModifiedTime())) {
+      if (thatInCache != null && appNamespace.getDataChangeLastModifiedTime()
+          .after(thatInCache.getDataChangeLastModifiedTime())) {
         appNamespaceIdCache.put(appNamespace.getId(), appNamespace);
         String oldKey = assembleAppNamespaceKey(thatInCache);
         String newKey = assembleAppNamespaceKey(appNamespace);
         appNamespaceCache.put(newKey, appNamespace);
 
-        //in case appId or namespaceName changes
+        // in case appId or namespaceName changes
         if (!newKey.equals(oldKey)) {
           appNamespaceCache.remove(oldKey);
         }
@@ -221,12 +223,12 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
         if (appNamespace.isPublic()) {
           publicAppNamespaceCache.put(appNamespace.getName(), appNamespace);
 
-          //in case namespaceName changes
+          // in case namespaceName changes
           if (!appNamespace.getName().equals(thatInCache.getName()) && thatInCache.isPublic()) {
             publicAppNamespaceCache.remove(thatInCache.getName());
           }
         } else if (thatInCache.isPublic()) {
-          //just in case isPublic changes
+          // just in case isPublic changes
           publicAppNamespaceCache.remove(thatInCache.getName());
         }
         logger.info("Found AppNamespace changes, old: {}, new: {}", thatInCache, appNamespace);
@@ -235,7 +237,7 @@ public class AppNamespaceServiceWithCache implements InitializingBean {
     return foundIds;
   }
 
-  //for those deleted app namespaces
+  // for those deleted app namespaces
   private void handleDeletedAppNamespaces(Set<Long> deletedIds) {
     if (CollectionUtils.isEmpty(deletedIds)) {
       return;

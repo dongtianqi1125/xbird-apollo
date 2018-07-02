@@ -23,14 +23,12 @@ public class CommitController {
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/commits", method = RequestMethod.GET)
   public List<CommitDTO> find(@PathVariable String appId, @PathVariable String env,
-                              @PathVariable String clusterName, @PathVariable String namespaceName,
-                              @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+      @PathVariable String clusterName, @PathVariable String namespaceName,
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
     RequestPrecondition.checkNumberPositive(size);
     RequestPrecondition.checkNumberNotNegative(page);
-
     return commitService.find(appId, Env.valueOf(env), clusterName, namespaceName, page, size);
-
   }
 
 }

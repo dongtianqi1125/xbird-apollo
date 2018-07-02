@@ -21,19 +21,20 @@ public class ConsumerAuthenticationFilter implements Filter {
   private ConsumerAuthUtil consumerAuthUtil;
   private ConsumerAuditUtil consumerAuditUtil;
 
-  public ConsumerAuthenticationFilter(ConsumerAuthUtil consumerAuthUtil, ConsumerAuditUtil consumerAuditUtil) {
+  public ConsumerAuthenticationFilter(ConsumerAuthUtil consumerAuthUtil,
+      ConsumerAuditUtil consumerAuditUtil) {
     this.consumerAuthUtil = consumerAuthUtil;
     this.consumerAuditUtil = consumerAuditUtil;
   }
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
-    //nothing
+    // nothing
   }
 
   @Override
-  public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws
-      IOException, ServletException {
+  public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+      throws IOException, ServletException {
     HttpServletRequest request = (HttpServletRequest) req;
     HttpServletResponse response = (HttpServletResponse) resp;
 
@@ -54,6 +55,6 @@ public class ConsumerAuthenticationFilter implements Filter {
 
   @Override
   public void destroy() {
-    //nothing
+    // nothing
   }
 }

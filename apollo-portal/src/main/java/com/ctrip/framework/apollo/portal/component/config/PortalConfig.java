@@ -26,8 +26,7 @@ import java.util.Set;
 public class PortalConfig extends RefreshableConfig {
 
   private Gson gson = new Gson();
-  private static final Type ORGANIZATION = new TypeToken<List<Organization>>() {
-  }.getType();
+  private static final Type ORGANIZATION = new TypeToken<List<Organization>>() {}.getType();
 
   @Autowired
   private PortalDBPropertySource portalDBPropertySource;
@@ -41,7 +40,8 @@ public class PortalConfig extends RefreshableConfig {
    * Level: important
    **/
   public List<Env> portalSupportedEnvs() {
-    String[] configurations = getArrayProperty("apollo.portal.envs", new String[]{"FAT", "UAT", "PRO"});
+    String[] configurations =
+        getArrayProperty("apollo.portal.envs", new String[] {"FAT", "UAT", "PRO"});
     List<Env> envs = Lists.newLinkedList();
 
     for (String env : configurations) {
@@ -88,7 +88,9 @@ public class PortalConfig extends RefreshableConfig {
   public List<Organization> organizations() {
 
     String organizations = getValue("organizations");
-    return organizations == null ? Collections.emptyList() : gson.fromJson(organizations, ORGANIZATION);
+    return organizations == null
+        ? Collections.emptyList()
+        : gson.fromJson(organizations, ORGANIZATION);
   }
 
   public String portalAddress() {
@@ -98,7 +100,8 @@ public class PortalConfig extends RefreshableConfig {
   public boolean isEmergencyPublishAllowed(Env env) {
     String targetEnv = env.name();
 
-    String[] emergencyPublishSupportedEnvs = getArrayProperty("emergencyPublish.supported.envs", new String[0]);
+    String[] emergencyPublishSupportedEnvs =
+        getArrayProperty("emergencyPublish.supported.envs", new String[0]);
 
     for (String supportedEnv : emergencyPublishSupportedEnvs) {
       if (Objects.equals(targetEnv, supportedEnv.toUpperCase().trim())) {

@@ -8,24 +8,28 @@ import java.util.Properties;
 public interface ConfigRepository {
   /**
    * Get the config from this repository.
+   * 
    * @return config
    */
   public Properties getConfig();
 
   /**
    * Set the fallback repo for this repository.
+   * 
    * @param upstreamConfigRepository the upstream repo
    */
   public void setUpstreamRepository(ConfigRepository upstreamConfigRepository);
 
   /**
    * Add change listener.
+   * 
    * @param listener the listener to observe the changes
    */
   public void addChangeListener(RepositoryChangeListener listener);
 
   /**
    * Remove change listener.
+   * 
    * @param listener the listener to remove
    */
   public void removeChangeListener(RepositoryChangeListener listener);

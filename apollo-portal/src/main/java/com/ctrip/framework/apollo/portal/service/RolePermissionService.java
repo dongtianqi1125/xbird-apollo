@@ -21,8 +21,7 @@ public interface RolePermissionService {
    *
    * @return the users assigned roles
    */
-  public Set<String> assignRoleToUsers(String roleName, Set<String> userIds,
-                                       String operatorUserId);
+  public Set<String> assignRoleToUsers(String roleName, Set<String> userIds, String operatorUserId);
 
   /**
    * Remove role from users

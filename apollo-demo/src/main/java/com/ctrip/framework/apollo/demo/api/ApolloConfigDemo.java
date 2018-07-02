@@ -83,25 +83,26 @@ public class ApolloConfigDemo {
       System.out.println("No config file content found for " + configFile.getNamespace());
       return;
     }
-    System.out.println("=== Config File Content for " + configFile.getNamespace() + " is as follows: ");
+    System.out
+        .println("=== Config File Content for " + configFile.getNamespace() + " is as follows: ");
     System.out.println(configFile.getContent());
   }
 
   private void printEnvInfo() {
-    String message = String.format("AppId: %s, Env: %s, DC: %s, IP: %s", Foundation.app()
-        .getAppId(), Foundation.server().getEnvType(), Foundation.server().getDataCenter(),
-        Foundation.net().getHostAddress());
+    String message = String.format("AppId: %s, Env: %s, DC: %s, IP: %s",
+        Foundation.app().getAppId(), Foundation.server().getEnvType(),
+        Foundation.server().getDataCenter(), Foundation.net().getHostAddress());
     System.out.println(message);
   }
 
   public static void main(String[] args) throws IOException {
     ApolloConfigDemo apolloConfigDemo = new ApolloConfigDemo();
     apolloConfigDemo.printEnvInfo();
-    System.out.println(
-        "Apollo Config Demo. Please input key to get the value.");
+    System.out.println("Apollo Config Demo. Please input key to get the value.");
     while (true) {
       System.out.print("> ");
-      String input = new BufferedReader(new InputStreamReader(System.in, Charsets.UTF_8)).readLine();
+      String input =
+          new BufferedReader(new InputStreamReader(System.in, Charsets.UTF_8)).readLine();
       if (input == null || input.length() == 0) {
         continue;
       }

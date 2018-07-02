@@ -39,96 +39,82 @@ public class NamespaceBranchController {
   private PortalConfig portalConfig;
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/branches", method = RequestMethod.GET)
-  public NamespaceBO findBranch(@PathVariable String appId,
-                                @PathVariable String env,
-                                @PathVariable String clusterName,
-                                @PathVariable String namespaceName) {
+  public NamespaceBO findBranch(@PathVariable String appId, @PathVariable String env,
+      @PathVariable String clusterName, @PathVariable String namespaceName) {
     return namespaceBranchService.findBranch(appId, Env.valueOf(env), clusterName, namespaceName);
   }
 
   @PreAuthorize(value = "@permissionValidator.hasModifyNamespacePermission(#appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/branches", method = RequestMethod.POST)
-  public NamespaceDTO createBranch(@PathVariable String appId,
-                                   @PathVariable String env,
-                                   @PathVariable String clusterName,
-                                   @PathVariable String namespaceName) {
+  public NamespaceDTO createBranch(@PathVariable String appId, @PathVariable String env,
+      @PathVariable String clusterName, @PathVariable String namespaceName) {
 
     return namespaceBranchService.createBranch(appId, Env.valueOf(env), clusterName, namespaceName);
   }
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/branches/{branchName}", method = RequestMethod.DELETE)
-  public void deleteBranch(@PathVariable String appId,
-                           @PathVariable String env,
-                           @PathVariable String clusterName,
-                           @PathVariable String namespaceName,
-                           @PathVariable String branchName) {
+  public void deleteBranch(@PathVariable String appId, @PathVariable String env,
+      @PathVariable String clusterName, @PathVariable String namespaceName,
+      @PathVariable String branchName) {
 
-    boolean canDelete = permissionValidator.hasReleaseNamespacePermission(appId, namespaceName) ||
-                        (permissionValidator.hasModifyNamespacePermission(appId, namespaceName) &&
-                         releaseService.loadLatestRelease(appId, Env.valueOf(env), branchName, namespaceName) == null);
-
+    boolean canDelete = permissionValidator.hasReleaseNamespacePermission(appId, namespaceName)
+        || (permissionValidator.hasModifyNamespacePermission(appId, namespaceName) && releaseService
+            .loadLatestRelease(appId, Env.valueOf(env), branchName, namespaceName) == null);
 
     if (!canDelete) {
-      throw new AccessDeniedException("Forbidden operation. "
-                                      + "Caused by: 1.you don't have release permission "
-                                      + "or 2. you don't have modification permission "
-                                      + "or 3. you have modification permission but branch has been released");
+      throw new AccessDeniedException(
+          "Forbidden operation. " + "Caused by: 1.you don't have release permission "
+              + "or 2. you don't have modification permission "
+              + "or 3. you have modification permission but branch has been released");
     }
 
-    namespaceBranchService.deleteBranch(appId, Env.valueOf(env), clusterName, namespaceName, branchName);
-
+    namespaceBranchService.deleteBranch(appId, Env.valueOf(env), clusterName, namespaceName,
+        branchName);
   }
-
-
 
   @PreAuthorize(value = "@permissionValidator.hasReleaseNamespacePermission(#appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/branches/{branchName}/merge", method = RequestMethod.POST)
   public ReleaseDTO merge(@PathVariable String appId, @PathVariable String env,
-                          @PathVariable String clusterName, @PathVariable String namespaceName,
-                          @PathVariable String branchName, @RequestParam(value = "deleteBranch", defaultValue = "true") boolean deleteBranch,
-                          @RequestBody NamespaceReleaseModel model) {
+      @PathVariable String clusterName, @PathVariable String namespaceName,
+      @PathVariable String branchName,
+      @RequestParam(value = "deleteBranch", defaultValue = "true") boolean deleteBranch,
+      @RequestBody NamespaceReleaseModel model) {
 
-    if (model.isEmergencyPublish() && !portalConfig.isEmergencyPublishAllowed(Env.fromString(env))) {
-      throw new BadRequestException(String.format("Env: %s is not supported emergency publish now", env));
+    if (model.isEmergencyPublish()
+        && !portalConfig.isEmergencyPublishAllowed(Env.fromString(env))) {
+      throw new BadRequestException(
+          String.format("Env: %s is not supported emergency publish now", env));
     }
 
-    ReleaseDTO createdRelease = namespaceBranchService.merge(appId, Env.valueOf(env), clusterName, namespaceName, branchName,
-                                                             model.getReleaseTitle(), model.getReleaseComment(),
-                                                             model.isEmergencyPublish(), deleteBranch);
+    ReleaseDTO createdRelease = namespaceBranchService.merge(appId, Env.valueOf(env), clusterName,
+        namespaceName, branchName, model.getReleaseTitle(), model.getReleaseComment(),
+        model.isEmergencyPublish(), deleteBranch);
 
     ConfigPublishEvent event = ConfigPublishEvent.instance();
-    event.withAppId(appId)
-        .withCluster(clusterName)
-        .withNamespace(namespaceName)
-        .withReleaseId(createdRelease.getId())
-        .setMergeEvent(true)
-        .setEnv(Env.valueOf(env));
+    event.withAppId(appId).withCluster(clusterName).withNamespace(namespaceName)
+        .withReleaseId(createdRelease.getId()).setMergeEvent(true).setEnv(Env.valueOf(env));
 
     publisher.publishEvent(event);
 
     return createdRelease;
   }
 
-
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/branches/{branchName}/rules", method = RequestMethod.GET)
   public GrayReleaseRuleDTO getBranchGrayRules(@PathVariable String appId, @PathVariable String env,
-                                                     @PathVariable String clusterName,
-                                                     @PathVariable String namespaceName,
-                                                     @PathVariable String branchName) {
+      @PathVariable String clusterName, @PathVariable String namespaceName,
+      @PathVariable String branchName) {
 
-    return namespaceBranchService.findBranchGrayRules(appId, Env.valueOf(env), clusterName, namespaceName, branchName);
+    return namespaceBranchService.findBranchGrayRules(appId, Env.valueOf(env), clusterName,
+        namespaceName, branchName);
   }
-
 
   @PreAuthorize(value = "@permissionValidator.hasOperateNamespacePermission(#appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/branches/{branchName}/rules", method = RequestMethod.PUT)
   public void updateBranchRules(@PathVariable String appId, @PathVariable String env,
-                                @PathVariable String clusterName, @PathVariable String namespaceName,
-                                @PathVariable String branchName, @RequestBody GrayReleaseRuleDTO rules) {
-
-    namespaceBranchService
-        .updateBranchGrayRules(appId, Env.valueOf(env), clusterName, namespaceName, branchName, rules);
-
+      @PathVariable String clusterName, @PathVariable String namespaceName,
+      @PathVariable String branchName, @RequestBody GrayReleaseRuleDTO rules) {
+    namespaceBranchService.updateBranchGrayRules(appId, Env.valueOf(env), clusterName,
+        namespaceName, branchName, rules);
   }
 
 }

@@ -27,36 +27,37 @@ public class NamespaceController {
 
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces", method = RequestMethod.POST)
   public NamespaceDTO create(@PathVariable("appId") String appId,
-                             @PathVariable("clusterName") String clusterName, @RequestBody NamespaceDTO dto) {
+      @PathVariable("clusterName") String clusterName, @RequestBody NamespaceDTO dto) {
     if (!InputValidator.isValidClusterNamespace(dto.getNamespaceName())) {
-      throw new BadRequestException(String.format("Namespace格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+      throw new BadRequestException(
+          String.format("Namespace格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
     }
     Namespace entity = BeanUtils.transfrom(Namespace.class, dto);
-    Namespace managedEntity = namespaceService.findOne(appId, clusterName, entity.getNamespaceName());
+    Namespace managedEntity =
+        namespaceService.findOne(appId, clusterName, entity.getNamespaceName());
     if (managedEntity != null) {
       throw new BadRequestException("namespace already exist.");
     }
 
     entity = namespaceService.save(entity);
-
     dto = BeanUtils.transfrom(NamespaceDTO.class, entity);
     return dto;
   }
 
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName:.+}", method = RequestMethod.DELETE)
   public void delete(@PathVariable("appId") String appId,
-                     @PathVariable("clusterName") String clusterName,
-                     @PathVariable("namespaceName") String namespaceName, @RequestParam String operator) {
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName, @RequestParam String operator) {
     Namespace entity = namespaceService.findOne(appId, clusterName, namespaceName);
     if (entity == null) throw new NotFoundException(
-            String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
+        String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
 
     namespaceService.deleteNamespace(entity, operator);
   }
 
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces", method = RequestMethod.GET)
   public List<NamespaceDTO> find(@PathVariable("appId") String appId,
-                                 @PathVariable("clusterName") String clusterName) {
+      @PathVariable("clusterName") String clusterName) {
     List<Namespace> groups = namespaceService.findNamespaces(appId, clusterName);
     return BeanUtils.batchTransform(NamespaceDTO.class, groups);
   }
@@ -71,23 +72,23 @@ public class NamespaceController {
 
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName:.+}", method = RequestMethod.GET)
   public NamespaceDTO get(@PathVariable("appId") String appId,
-                          @PathVariable("clusterName") String clusterName,
-                          @PathVariable("namespaceName") String namespaceName) {
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName) {
     Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
     if (namespace == null) throw new NotFoundException(
-            String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
+        String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
     return BeanUtils.transfrom(NamespaceDTO.class, namespace);
   }
 
-  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/associated-public-namespace",
-      method = RequestMethod.GET)
+  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/associated-public-namespace", method = RequestMethod.GET)
   public NamespaceDTO findPublicNamespaceForAssociatedNamespace(@PathVariable String appId,
-                                                                @PathVariable String clusterName,
-                                                                @PathVariable String namespaceName) {
-    Namespace namespace = namespaceService.findPublicNamespaceForAssociatedNamespace(clusterName, namespaceName);
+      @PathVariable String clusterName, @PathVariable String namespaceName) {
+    Namespace namespace =
+        namespaceService.findPublicNamespaceForAssociatedNamespace(clusterName, namespaceName);
 
     if (namespace == null) {
-      throw new NotFoundException(String.format("public namespace not found. namespace:%s", namespaceName));
+      throw new NotFoundException(
+          String.format("public namespace not found. namespace:%s", namespaceName));
     }
 
     return BeanUtils.transfrom(NamespaceDTO.class, namespace);

@@ -32,22 +32,20 @@ import java.util.Objects;
 @RestController
 public class ConsumerController {
 
-  private static final Date DEFAULT_EXPIRES = new GregorianCalendar(2099, Calendar.JANUARY, 1).getTime();
+  private static final Date DEFAULT_EXPIRES =
+      new GregorianCalendar(2099, Calendar.JANUARY, 1).getTime();
 
   @Autowired
   private ConsumerService consumerService;
-
 
   @Transactional
   @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "/consumers", method = RequestMethod.POST)
   public ConsumerToken createConsumer(@RequestBody Consumer consumer,
-                                      @RequestParam(value = "expires", required = false)
-                                      @DateTimeFormat(pattern = "yyyyMMddHHmmss") Date
-                                          expires) {
+      @RequestParam(value = "expires", required = false) @DateTimeFormat(pattern = "yyyyMMddHHmmss") Date expires) {
 
-    if (StringUtils.isContainEmpty(consumer.getAppId(), consumer.getName(),
-                                   consumer.getOwnerName(), consumer.getOrgId())) {
+    if (StringUtils.isContainEmpty(consumer.getAppId(), consumer.getName(), consumer.getOwnerName(),
+        consumer.getOrgId())) {
       throw new BadRequestException("Params(appId、name、ownerName、orgId) can not be empty.");
     }
 
@@ -68,8 +66,7 @@ public class ConsumerController {
   @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "/consumers/{token}/assign-role", method = RequestMethod.POST)
   public List<ConsumerRole> assignNamespaceRoleToConsumer(@PathVariable String token,
-                                                          @RequestParam String type,
-                                                          @RequestBody NamespaceDTO namespace) {
+      @RequestParam String type, @RequestBody NamespaceDTO namespace) {
 
     String appId = namespace.getAppId();
     String namespaceName = namespace.getNamespaceName();
@@ -87,7 +84,5 @@ public class ConsumerController {
       return consumerService.assignNamespaceRoleToConsumer(token, appId, namespaceName);
     }
   }
-
-
 
 }

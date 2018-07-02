@@ -10,6 +10,7 @@ public class HttpRequest {
 
   /**
    * Create the request for the url.
+   * 
    * @param url the url
    */
   public HttpRequest(String url) {

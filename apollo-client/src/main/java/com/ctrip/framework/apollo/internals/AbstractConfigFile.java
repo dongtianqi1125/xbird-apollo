@@ -31,8 +31,8 @@ public abstract class AbstractConfigFile implements ConfigFile, RepositoryChange
   private List<ConfigFileChangeListener> m_listeners = Lists.newCopyOnWriteArrayList();
 
   static {
-    m_executorService = Executors.newCachedThreadPool(ApolloThreadFactory
-        .create("ConfigFile", true));
+    m_executorService =
+        Executors.newCachedThreadPool(ApolloThreadFactory.create("ConfigFile", true));
   }
 
   public AbstractConfigFile(String namespace, ConfigRepository configRepository) {
@@ -47,11 +47,11 @@ public abstract class AbstractConfigFile implements ConfigFile, RepositoryChange
       m_configProperties.set(m_configRepository.getConfig());
     } catch (Throwable ex) {
       Tracer.logError(ex);
-      logger.warn("Init Apollo Config File failed - namespace: {}, reason: {}.",
-          m_namespace, ExceptionUtil.getDetailMessage(ex));
+      logger.warn("Init Apollo Config File failed - namespace: {}, reason: {}.", m_namespace,
+          ExceptionUtil.getDetailMessage(ex));
     } finally {
-      //register the change listener no matter config repository is working or not
-      //so that whenever config repository is recovered, config could get changed
+      // register the change listener no matter config repository is working or not
+      // so that whenever config repository is recovered, config could get changed
       m_configRepository.addChangeListener(this);
     }
   }
@@ -103,7 +103,8 @@ public abstract class AbstractConfigFile implements ConfigFile, RepositoryChange
         @Override
         public void run() {
           String listenerName = listener.getClass().getName();
-          Transaction transaction = Tracer.newTransaction("Apollo.ConfigFileChangeListener", listenerName);
+          Transaction transaction =
+              Tracer.newTransaction("Apollo.ConfigFileChangeListener", listenerName);
           try {
             listener.onChange(changeEvent);
             transaction.setStatus(Transaction.SUCCESS);

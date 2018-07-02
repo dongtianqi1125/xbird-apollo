@@ -36,8 +36,8 @@ public class ApolloAnnotationProcessor extends ApolloProcessor {
 
   @Override
   protected void processMethod(final Object bean, String beanName, final Method method) {
-    ApolloConfigChangeListener annotation = AnnotationUtils
-        .findAnnotation(method, ApolloConfigChangeListener.class);
+    ApolloConfigChangeListener annotation =
+        AnnotationUtils.findAnnotation(method, ApolloConfigChangeListener.class);
     if (annotation == null) {
       return;
     }

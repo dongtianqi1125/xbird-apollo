@@ -12,7 +12,6 @@ public class NormalPublishEmailBuilder extends ConfigPublishEmailBuilder {
 
   private static final String EMAIL_SUBJECT = "[Apollo] 配置发布";
 
-
   @Override
   protected String subject() {
     return EMAIL_SUBJECT;

@@ -45,13 +45,13 @@ public class GrayPublishEmailBuilder extends ConfigPublishEmailBuilder {
     return portalConfig.emailReleaseDiffModuleTemplate();
   }
 
-  private String renderGrayReleaseRuleContent(String bodyTemplate, ReleaseHistoryBO releaseHistory) {
+  private String renderGrayReleaseRuleContent(String bodyTemplate,
+      ReleaseHistoryBO releaseHistory) {
 
     Map<String, Object> context = releaseHistory.getOperationContext();
     Object rules = context.get("rules");
-    List<GrayReleaseRuleItemDTO>
-            ruleItems = rules == null ?
-            null : gson.fromJson(rules.toString(), GsonType.RULE_ITEMS);
+    List<GrayReleaseRuleItemDTO> ruleItems =
+        rules == null ? null : gson.fromJson(rules.toString(), GsonType.RULE_ITEMS);
 
 
     if (CollectionUtils.isEmpty(ruleItems)) {
@@ -62,16 +62,16 @@ public class GrayPublishEmailBuilder extends ConfigPublishEmailBuilder {
         String clientAppId = ruleItem.getClientAppId();
         Set<String> ips = ruleItem.getClientIpList();
 
-        rulesHtmlBuilder.append("<b>AppId:&nbsp;</b>")
-                .append(clientAppId)
-                .append("&nbsp;&nbsp; <b>IP:&nbsp;</b>");
+        rulesHtmlBuilder.append("<b>AppId:&nbsp;</b>").append(clientAppId)
+            .append("&nbsp;&nbsp; <b>IP:&nbsp;</b>");
 
         IP_JOINER.appendTo(rulesHtmlBuilder, ips);
       }
-      String grayRulesModuleContent = portalConfig.emailGrayRulesModuleTemplate().replaceAll(EMAIL_CONTENT_GRAY_RULES_CONTENT,
-              Matcher.quoteReplacement(rulesHtmlBuilder.toString()));
+      String grayRulesModuleContent = portalConfig.emailGrayRulesModuleTemplate().replaceAll(
+          EMAIL_CONTENT_GRAY_RULES_CONTENT, Matcher.quoteReplacement(rulesHtmlBuilder.toString()));
 
-      return bodyTemplate.replaceAll(EMAIL_CONTENT_GRAY_RULES_MODULE, Matcher.quoteReplacement(grayRulesModuleContent));
+      return bodyTemplate.replaceAll(EMAIL_CONTENT_GRAY_RULES_MODULE,
+          Matcher.quoteReplacement(grayRulesModuleContent));
     }
 
   }

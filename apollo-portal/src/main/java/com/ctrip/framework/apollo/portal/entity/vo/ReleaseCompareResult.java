@@ -15,7 +15,7 @@ public class ReleaseCompareResult {
     changes.add(new Change(type, new EntityPair<>(firstEntity, secondEntity)));
   }
 
-  public boolean hasContent(){
+  public boolean hasContent() {
     return !changes.isEmpty();
   }
 

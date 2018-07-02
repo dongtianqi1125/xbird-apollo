@@ -34,8 +34,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Service
 public class ReleaseMessageServiceWithCache implements ReleaseMessageListener, InitializingBean {
-  private static final Logger logger = LoggerFactory.getLogger(ReleaseMessageServiceWithCache
-      .class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(ReleaseMessageServiceWithCache.class);
   @Autowired
   private ReleaseMessageRepository releaseMessageRepository;
 
@@ -59,8 +59,8 @@ public class ReleaseMessageServiceWithCache implements ReleaseMessageListener, I
   private void initialize() {
     releaseMessageCache = Maps.newConcurrentMap();
     doScan = new AtomicBoolean(true);
-    executorService = Executors.newSingleThreadExecutor(ApolloThreadFactory
-        .create("ReleaseMessageServiceWithCache", true));
+    executorService = Executors.newSingleThreadExecutor(
+        ApolloThreadFactory.create("ReleaseMessageServiceWithCache", true));
   }
 
   public ReleaseMessage findLatestReleaseMessageForMessages(Set<String> messages) {
@@ -99,7 +99,7 @@ public class ReleaseMessageServiceWithCache implements ReleaseMessageListener, I
 
   @Override
   public void handleMessage(ReleaseMessage message, String channel) {
-    //Could stop once the ReleaseMessageScanner starts to work
+    // Could stop once the ReleaseMessageScanner starts to work
     doScan.set(false);
     logger.info("message received - channel: {}, message: {}", channel, message);
 
@@ -113,7 +113,7 @@ public class ReleaseMessageServiceWithCache implements ReleaseMessageListener, I
     if (gap == 1) {
       mergeReleaseMessage(message);
     } else if (gap > 1) {
-      //gap found!
+      // gap found!
       loadReleaseMessages(maxIdScanned);
     }
   }
@@ -121,8 +121,8 @@ public class ReleaseMessageServiceWithCache implements ReleaseMessageListener, I
   @Override
   public void afterPropertiesSet() throws Exception {
     populateDataBaseInterval();
-    //block the startup process until load finished
-    //this should happen before ReleaseMessageScanner due to autowire
+    // block the startup process until load finished
+    // this should happen before ReleaseMessageScanner due to autowire
     loadReleaseMessages(0);
 
     executorService.submit(() -> {
@@ -141,7 +141,7 @@ public class ReleaseMessageServiceWithCache implements ReleaseMessageListener, I
         try {
           scanIntervalTimeUnit.sleep(scanInterval);
         } catch (InterruptedException e) {
-          //ignore
+          // ignore
         }
       }
     });
@@ -158,9 +158,9 @@ public class ReleaseMessageServiceWithCache implements ReleaseMessageListener, I
   private void loadReleaseMessages(long startId) {
     boolean hasMore = true;
     while (hasMore && !Thread.currentThread().isInterrupted()) {
-      //current batch is 500
-      List<ReleaseMessage> releaseMessages = releaseMessageRepository
-          .findFirst500ByIdGreaterThanOrderByIdAsc(startId);
+      // current batch is 500
+      List<ReleaseMessage> releaseMessages =
+          releaseMessageRepository.findFirst500ByIdGreaterThanOrderByIdAsc(startId);
       if (CollectionUtils.isEmpty(releaseMessages)) {
         break;
       }

@@ -49,8 +49,8 @@ public class ApolloJsonValueProcessor extends ApolloProcessor implements BeanFac
       return;
     }
     String placeholder = apolloJsonValue.value();
-    Object propertyValue = placeholderHelper
-        .resolvePropertyValue(beanFactory, beanName, placeholder);
+    Object propertyValue =
+        placeholderHelper.resolvePropertyValue(beanFactory, beanName, placeholder);
 
     // propertyValue will never be null, as @ApolloJsonValue will not allow that
     if (!(propertyValue instanceof String)) {
@@ -59,8 +59,8 @@ public class ApolloJsonValueProcessor extends ApolloProcessor implements BeanFac
 
     boolean accessible = field.isAccessible();
     field.setAccessible(true);
-    ReflectionUtils
-        .setField(field, bean, parseJsonValue((String)propertyValue, field.getGenericType()));
+    ReflectionUtils.setField(field, bean,
+        parseJsonValue((String) propertyValue, field.getGenericType()));
     field.setAccessible(accessible);
 
     if (configUtil.isAutoUpdateInjectedSpringPropertiesEnabled()) {
@@ -81,8 +81,8 @@ public class ApolloJsonValueProcessor extends ApolloProcessor implements BeanFac
     }
     String placeHolder = apolloJsonValue.value();
 
-    Object propertyValue = placeholderHelper
-        .resolvePropertyValue(beanFactory, beanName, placeHolder);
+    Object propertyValue =
+        placeholderHelper.resolvePropertyValue(beanFactory, beanName, placeHolder);
 
     // propertyValue will never be null, as @ApolloJsonValue will not allow that
     if (!(propertyValue instanceof String)) {
@@ -96,14 +96,14 @@ public class ApolloJsonValueProcessor extends ApolloProcessor implements BeanFac
 
     boolean accessible = method.isAccessible();
     method.setAccessible(true);
-    ReflectionUtils.invokeMethod(method, bean, parseJsonValue((String)propertyValue, types[0]));
+    ReflectionUtils.invokeMethod(method, bean, parseJsonValue((String) propertyValue, types[0]));
     method.setAccessible(accessible);
 
     if (configUtil.isAutoUpdateInjectedSpringPropertiesEnabled()) {
       Set<String> keys = placeholderHelper.extractPlaceholderKeys(placeHolder);
       for (String key : keys) {
-        SpringValue springValue = new SpringValue(key, apolloJsonValue.value(), bean, beanName,
-            method, true);
+        SpringValue springValue =
+            new SpringValue(key, apolloJsonValue.value(), bean, beanName, method, true);
         springValueRegistry.register(key, springValue);
         logger.debug("Monitoring {}", springValue);
       }
